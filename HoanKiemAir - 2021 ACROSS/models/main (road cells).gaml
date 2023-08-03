@@ -31,6 +31,7 @@ global {
 	list<pollutant_grid> active_cells;
 
 	init {
+		sizeCoeff<-1;
 		create road from: roads_shape_file {
 		// Create a reverse road if the road is not oneway
 			if (!oneway) {
@@ -223,7 +224,7 @@ global {
 	//		time_absorb_pollutants <- 0.0;
 	//		time_diffuse_pollutants <- 0.0;
 	//	}
-	float decrease_coeff <- 0.75;
+	float decrease_coeff <- 0.85;
 //	int size <- 300;
 //	field instant_heatmap <- field(size, size);
 //

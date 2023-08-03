@@ -11,7 +11,6 @@ import "../global_vars.gaml"
 global {
 	float time_vehicles_move;
 	int nb_recompute_path;
-	int sizeCoeff<-10;
 }
 
 species road schedules: [] {
