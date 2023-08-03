@@ -224,7 +224,7 @@ global {
 	//		time_absorb_pollutants <- 0.0;
 	//		time_diffuse_pollutants <- 0.0;
 	//	}
-	float decrease_coeff <- 0.85;
+	float decrease_coeff <- 0.9;
 //	int size <- 300;
 //	field instant_heatmap <- field(size, size);
 //
@@ -258,8 +258,8 @@ grid pollutant_grid height: 50 width: 50 neighbors: 8 /*schedules: active_cells*
 
 	reflex update {
 		pollution <- pollution * decrease_coeff;
-		color <- rgb(255 * pollution, 0, 0);
-		color<-palette([ #white, #white, #orange, #orange, #red, #red, #red])[int(pollution)mod 7];
+		color <- rgb(255 * pollution/10, 0, 0);
+//		color<-palette([ #white, #white, #orange, #orange, #red, #red, #red])[int(pollution/10)mod 7];
 	}
 
 }
@@ -273,7 +273,7 @@ experiment exp {
 //	  		light #ambient intensity: 50;
 //			light #default type:#point intensity:hsb(0,0,1) location:{world.shape.width*0.5+ world.shape.width*1.5*sin(time*2),world.shape.width*0.5,world.shape.width*cos(time*2)} show:false dynamic:true;
 		
-			grid pollutant_grid elevation:pollution<0?0.0:pollution transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
+			grid pollutant_grid elevation:pollution<0?0.0:pollution/10 transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
 			image ("../includes/bigger_map/vin.png");
 			//			mesh instant_heatmap scale: 0  transparency:0.5 color: palette([ #black, #black, #orange, #orange, #red, #red, #red]) smooth: 2 ;
 			species vehicle;
