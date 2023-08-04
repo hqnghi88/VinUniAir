@@ -17,21 +17,20 @@ global {
 	float time_diffuse_pollutants;
 	float time_create_congestions;
 	float step <- 1 #s;
-
+	float MAX_P <- 10.0;
 	// Load shapefiles
 	string resources_dir <- "../includes/bigger_map/";
 	shape_file roads_shape_file <- shape_file(resources_dir + "roads.shp");
-//	shape_file dummy_roads_shape_file <- shape_file(resources_dir + "vinuniroad.shp");
+	//	shape_file dummy_roads_shape_file <- shape_file(resources_dir + "vinuniroad.shp");
 	shape_file buildings_shape_file <- shape_file(resources_dir + "buildings.shp");
-//	shape_file road_cells_shape_file <- shape_file(resources_dir + "road_cells.shp");
-//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
-//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
+	//	shape_file road_cells_shape_file <- shape_file(resources_dir + "road_cells.shp");
+	//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
+	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
 	geometry shape <- envelope(roads_shape_file);
 	list<road> open_roads;
-	list<pollutant_grid> active_cells;
-
+	//	list<pollutant_grid> active_cells;
 	init {
-		sizeCoeff<-1;
+		sizeCoeff <- 1;
 		create road from: roads_shape_file {
 		// Create a reverse road if the road is not oneway
 			if (!oneway) {
@@ -46,6 +45,7 @@ global {
 			}
 
 		}
+
 		open_roads <- list(road);
 		map<road, float> road_weights <- road as_map (each::each.shape.perimeter);
 		road_network <- as_edge_graph(road) with_weights road_weights;
@@ -56,26 +56,26 @@ global {
 			depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 10 + 10;
 			texture <- textures[rnd(9)];
 		}
- 
-//save building to:"../includes/bigger_map/buildings.shp" format:"shp" crs:"3857";
-//save road to:"../includes/bigger_map/roads.shp" format:"shp" crs:"3857";
-//		create decoration_building from: buildings_admin_shape_file;
-//		create dummy_road from: dummy_roads_shape_file;
-//		create natural from: naturals_shape_file;
+
+		//save building to:"../includes/bigger_map/buildings.shp" format:"shp" crs:"3857";
+		//save road to:"../includes/bigger_map/roads.shp" format:"shp" crs:"3857";
+		//		create decoration_building from: buildings_admin_shape_file;
+		//		create dummy_road from: dummy_roads_shape_file;
+		//		create natural from: naturals_shape_file;
 		create progress_bar with: [x::-700, y::1800, width::500, height::100, max_val::500, title::"Cars", left_label::"0", right_label::"500"];
 		create progress_bar with: [x::-700, y::2000, width::500, height::100, max_val::1500, title::"Motorbikes", left_label::"0", right_label::"1500"];
 		create line_graph with: [x::2600, y::1400, width::1300, height::1000, label::"Hourly AQI"];
 
 		// Init pollutant cells
-//		create road_cell from: road_cells_shape_file {
-//			neighbors <- road_cell at_distance 10 #cm;
-//			affected_buildings <- building at_distance 50 #m;
-//		}
+		//		create road_cell from: road_cells_shape_file {
+		//			neighbors <- road_cell at_distance 10 #cm;
+		//			affected_buildings <- building at_distance 50 #m;
+		//		}
 
-		active_cells <- pollutant_grid where (!empty(road overlapping each));
-		ask active_cells {
-			active <- true;
-		}
+		//		active_cells <- pollutant_grid where (!empty(road overlapping each));
+		//		ask active_cells {
+		//			active <- true;
+		//		}
 
 	}
 
@@ -225,65 +225,64 @@ global {
 	//		time_diffuse_pollutants <- 0.0;
 	//	}
 	float decrease_coeff <- 0.9;
-//	int size <- 300;
-//	field instant_heatmap <- field(size, size);
-//
-//	reflex update {
-//		instant_heatmap[] <- 0;
-//		ask vehicle {
-//			instant_heatmap[location] <- instant_heatmap[location] + 150;
-//		}
-//
-//	}
-
-}
-
-grid pollutant_grid height: 50 width: 50 neighbors: 8 /*schedules: active_cells*/ {
-	rgb color <- #black;
-	bool active <- false;
-	float pollution;
-
-	reflex pollution_increase when: active {
-		list<vehicle> people_on_cell <- vehicle overlapping self;
-		pollution <- pollution + sum(people_on_cell accumulate (each.get_pollution()));
-	}
-
-	reflex diffusion {
-		ask neighbors {
-			pollution <- pollution + 0.05 * myself.pollution;
-		}
-
-		pollution <- pollution * (1 - 8 * 0.05);
-	}
+	int size <- 100;
+	field instant_heatmap <- field(size, size);
 
 	reflex update {
-		pollution <- pollution * decrease_coeff;
-		color <- rgb(255 * pollution/10, 0, 0);
-//		color<-palette([ #white, #white, #orange, #orange, #red, #red, #red])[int(pollution/10)mod 7];
+		instant_heatmap[] <- 0;
+		ask vehicle {
+			instant_heatmap[location] <- instant_heatmap[location] + 150;
+		}
+
 	}
 
 }
 
+//grid pollutant_grid height: 100 width: 100 neighbors: 8 /*schedules: active_cells*/ {
+//	rgb color <- #black;
+//	bool active <- false;
+//	float pollution;
+//
+//	reflex pollution_increase when: active {
+//		list<vehicle> people_on_cell <- vehicle overlapping self;
+//		pollution <- pollution + sum(people_on_cell accumulate (each.get_pollution()));
+//	}
+//
+//	reflex diffusion {
+//		ask neighbors {
+//			pollution <- pollution + 0.05 * myself.pollution;
+//		}
+//
+//		pollution <- pollution * (1 - 8 * 0.05);
+//	}
+//
+//	reflex update {
+//		pollution <- pollution * decrease_coeff;
+//		color <- rgb(255 * pollution/10, 0, 0);
+//		color<-palette([ #white, #white, #orange, #orange, #red, #red, #red])[int(min(pollution,MAX_P)*7/MAX_P)mod 7];
+//	} 
+//}
 experiment exp {
 	parameter "Number of cars" var: n_cars <- 50 min: 0 max: 250;
-	parameter "Number of motorbikes" var: n_motorbikes <- 100 min: 0 max: 500; 
+	parameter "Number of motorbikes" var: n_motorbikes <- 100 min: 0 max: 500;
 	output {
-		display main type: opengl background: #white  axes:false{
-			camera 'default' location: {581.6792,1227.6974,388.9891} target: {568.1048,450.0203,0.0};	  		
-//	  		light #ambient intensity: 50;
-//			light #default type:#point intensity:hsb(0,0,1) location:{world.shape.width*0.5+ world.shape.width*1.5*sin(time*2),world.shape.width*0.5,world.shape.width*cos(time*2)} show:false dynamic:true;
-		
-			grid pollutant_grid elevation:pollution<0?0.0:pollution/10 transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
-			image ("../includes/bigger_map/vin.png");
-			//			mesh instant_heatmap scale: 0  transparency:0.5 color: palette([ #black, #black, #orange, #orange, #red, #red, #red]) smooth: 2 ;
+		display main type: opengl background: #white axes: false {
+			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};
 			species vehicle;
 			species road;
-//			species natural;
+			//			species natural;
 			species building;
-//			species decoration_building;
-//			species dummy_road;
+			//			species decoration_building;
+			//			species dummy_road;
 			species progress_bar;
 			species line_graph;
+			//	  		light #ambient intensity: 50;
+			//			light #default type:#point intensity:hsb(0,0,1) location:{world.shape.width*0.5+ world.shape.width*1.5*sin(time*2),world.shape.width*0.5,world.shape.width*cos(time*2)} show:false dynamic:true;
+
+			//			grid pollutant_grid elevation:pollution<0?0.0:pollution/10 transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
+			mesh instant_heatmap scale: 1 triangulation: true  transparency: 0.5 color: palette([#white, #white, #orange, #orange, #red, #red, #red]) smooth: 2 position:{0,0,-0.0001};
+			image ("../includes/bigger_map/vin.png");
+			
 		}
 
 	}
