@@ -225,7 +225,7 @@ global {
 	//		time_diffuse_pollutants <- 0.0;
 	//	}
 	float decrease_coeff <- 0.9;
-	int size <- 100;
+	int size <- 300;
 	field instant_heatmap <- field(size, size);
 
 	reflex update {
