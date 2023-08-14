@@ -23,15 +23,15 @@ global parent: physical_world {
 	shape_file wall_shape_file <- shape_file("walls.shp");
 	//	geometry shape <- rectangle(width, width);
 	geometry shape <- envelope(wall_shape_file);
-	int wwidth <- 50;
+	int wwidth;
 	int hheight <- 20;
 	float step <- 0.01;
 
 	init {
-		wwidth <- world.shape.width;
+		wwidth <- int(world.shape.width);
 		//10000 particles are created, randomly located in a virtual box in the center of the world
-		create particles number: 1000 {
-			location <- {rnd(wwidth / 4) + wwidth / 4, rnd(wwidth / 4) + wwidth / 4, rnd(hheight / 2) + hheight / 4};
+		create particles number: 5000 {
+			location <- {rnd(wwidth / 8) + wwidth / 8, rnd(wwidth / 8) + wwidth / 8, rnd(hheight / 8) + hheight / 8};
 		}
 
 		create wall from: wall_shape_file {
@@ -70,7 +70,7 @@ species wall skills: [static_body] {
  * Particles are dynamic bodies that wander around. They provide a perfect restitution (i.e. bounciness) and no friction.
  */
 species particles skills: [dynamic_body] {
-	geometry shape <- sphere(0.5);
+	geometry shape <- sphere(0.2);
 	rgb color <- one_of(brewer_colors("Greens"));
 	// No friction exerted on other particles
 	float friction <- 0.0;
@@ -87,11 +87,11 @@ species particles skills: [dynamic_body] {
 	}
 
 	// A (commented out) callback action can be defined, for instance to exchange the colors of the particles when they collide
-	//	action contact_added_with(agent other) {
-	//		if (other is particles) {
-	//			color <- particles(other).color;
-	//		}
-	// 	}
+		action contact_added_with(agent other) {
+			if (other is particles) {
+				color <- particles(other).color;
+			}
+	 	}
 }
 
 experiment "Gas Chamber" type: gui {
