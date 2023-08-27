@@ -11,9 +11,13 @@ import "../global_vars.gaml"
 global {
 	float time_vehicles_move;
 	int nb_recompute_path;
+	float lane_width <- 1.7;  
+	list<intersection> non_deadend_nodes;	
 }
 
-species road schedules: [] {
+species road schedules: []  skills: [road_skill] {
+	rgb color <- #white; 
+
 	string type;
 	bool oneway;
 	bool s1_closed;
@@ -52,62 +56,223 @@ species road schedules: [] {
 
 }
 
-species vehicle skills: [moving] {
+//species vehicle skills: [driving] {
+//	string type;
+//	point target;
+//	float time_to_go;
+//	bool recompute_path <- false;
+//	path my_path;
+//
+//	init {
+//		speed <- 3*sizeCoeff + rnd(10) #km / #h;
+////		location <- one_of(building).location;
+//		location <- any(road_network.vertices);
+//	}
+//
+//	reflex choose_new_target when: target = nil and time >= time_to_go {
+//		target <-any(road_network.vertices);// road_network.vertices closest_to any(building);
+//	}
+//
+//	reflex move when: target != nil {
+//		float start <- machine_time;
+//		do goto target: target on: road_network recompute_path: recompute_path;
+//		if location = target {
+//			target <- nil;
+//			time_to_go <- time; //+ rnd(15)#mn;
+//		}
+//
+//		if (recompute_path) {
+//			recompute_path <- false;
+//		}
+//
+//		float end <- machine_time;
+//		time_vehicles_move <- time_vehicles_move + (end - start);
+//	}
+//
+//	float pollution_from_speed {
+//		float returnedValue <- 1.0;		
+//		return (returnedValue);
+//	}
+//
+//	float get_pollution {
+//		return pollution_from_speed() *1;// coeff_vehicle[type];
+//	}
+//
+//	aspect default {
+//		switch type {
+//			match "car" {
+//				draw rectangle(10*sizeCoeff, 5*sizeCoeff) rotate: heading color: palet[CAR] depth: 5*sizeCoeff;
+//			}
+//
+//			match "motorbike" {
+//				draw rectangle(5*sizeCoeff, 2*sizeCoeff) rotate: heading color: palet[MOTOBYKE] depth: 7*sizeCoeff;
+//			}
+//
+//		}
+//
+//	}
+//
+//}
+
+species intersection skills: [intersection_skill] {
+	rgb color;
+	bool is_traffic_signal;
+	float time_to_change <- 30#s;
+	float counter <- rnd(time_to_change);
+	list<road> ways1;
+	list<road> ways2;
+	bool is_green;
+	rgb color_fire;
+
+	action initialize {
+		if (is_traffic_signal) {
+			do compute_crossing;
+			stop << [];
+			if (flip(0.5)) {
+				do to_green;
+			} else {
+				do to_red;
+			}
+		}
+	}
+
+	action compute_crossing {
+		if (length(roads_in) >= 2) {
+			road rd0 <- road(roads_in[0]);
+			list<point> pts <- rd0.shape.points;
+			float ref_angle <- last(pts) direction_to rd0.location;
+			loop rd over: roads_in {
+				list<point> pts2 <- road(rd).shape.points;
+				float angle_dest <- last(pts2) direction_to rd.location;
+				float ang <- abs(angle_dest - ref_angle);
+				if (ang > 45 and ang < 135) or (ang > 225 and ang < 315) {
+					ways2 << road(rd);
+				}
+			}
+		}
+
+		loop rd over: roads_in {
+			if not (rd in ways2) {
+				ways1 << road(rd);
+			}
+		}
+	}
+
+	action to_green {
+		stop[0] <- ways2;
+		color_fire <- #green;
+		is_green <- true;
+	}
+
+	action to_red {
+		stop[0] <- ways1;
+		color_fire <- #red;
+		is_green <- false;
+	}
+
+	reflex dynamic_node when: is_traffic_signal {
+		counter <- counter + step;
+		if (counter >= time_to_change) {
+			counter <- 0.0;
+			if is_green {
+				do to_red;
+			} else {
+				do to_green;
+			}
+		}
+	}
+
+	aspect base {
+		if (is_traffic_signal) {
+			draw circle(1) color: color_fire;
+		} else {
+			draw circle(1) color: color;
+		}
+	}
+}
+
+species base_vehicle skills: [driving] {
+	rgb color <- rnd_color(255);
+	graph road_graph;
+	
 	string type;
-	point target;
-	float time_to_go;
-	bool recompute_path <- false;
-	path my_path;
+	point compute_position {
+		// Shifts the position of the vehicle perpendicularly to the road,
+		// in order to visualize different lanes
+		if (current_road != nil) {
+			float dist <- (road(current_road).num_lanes - current_lane -
+				mean(range(num_lanes_occupied - 1)) - 0.5) * lane_width;
+			if violating_oneway {
+				dist <- -dist;
+			}
+		 	point shift_pt <- {cos(heading + 90) * dist, sin(heading + 90) * dist};	
+		
+			return location + shift_pt;
+		} else {
+			return {0, 0};
+		}
+	}
+	
+	aspect base {
+		if (current_road != nil) {
+			point pos <- compute_position();
+				
+			draw rectangle(vehicle_length, lane_width * num_lanes_occupied) 
+				at: pos color: color rotate: heading border: #black;
+			draw triangle(lane_width * num_lanes_occupied) 
+				at: pos color: #white rotate: heading + 90 border: #black;
+		}
+	}
+}
 
+species vehicle_random parent: base_vehicle {
 	init {
-		speed <- 3*sizeCoeff + rnd(10) #km / #h;
-//		location <- one_of(building).location;
-		location <- any(road_network.vertices);
+		road_graph <- road_network;
+		location <- one_of(non_deadend_nodes).location;
+		right_side_driving <- true;
 	}
 
-	reflex choose_new_target when: target = nil and time >= time_to_go {
-		target <-any(road_network.vertices);// road_network.vertices closest_to any(building);
+	// Move the vehicle to a random node when it reaches a deadend
+	reflex relocate when: next_road = nil and distance_to_current_target = 0.0 {
+		do unregister;
+		location <- one_of(non_deadend_nodes).location;
 	}
-
-	reflex move when: target != nil {
-		float start <- machine_time;
-		do goto target: target on: road_network recompute_path: recompute_path;
-		if location = target {
-			target <- nil;
-			time_to_go <- time; //+ rnd(15)#mn;
-		}
-
-		if (recompute_path) {
-			recompute_path <- false;
-		}
-
-		float end <- machine_time;
-		time_vehicles_move <- time_vehicles_move + (end - start);
+	
+	reflex commute {
+		do drive_random graph: road_graph;
 	}
+}
 
-	float pollution_from_speed {
-		float returnedValue <- 1.0;		
-		return (returnedValue);
+species motorbike_random parent: vehicle_random {
+	init {
+		vehicle_length <- 3.9 #m;
+		num_lanes_occupied <- 1;
+		max_speed <- (1 + rnd(20)) #km / #h;
+
+		proba_block_node <- 0.0;
+		proba_respect_priorities <- 1.0;
+		proba_respect_stops <- [1.0];
+		proba_use_linked_road <- 0.5;
+
+		lane_change_limit <- 2;		
+		linked_lane_limit <- 1;
 	}
+}
 
-	float get_pollution {
-		return pollution_from_speed() *1;// coeff_vehicle[type];
+species car_random parent: vehicle_random {
+	init {
+		vehicle_length <- 6.8 #m;
+		num_lanes_occupied <- 2;
+		max_speed <- (2 + rnd(10)) #km / #h;
+				
+		proba_block_node <- 0.0;
+		proba_respect_priorities <- 1.0;
+		proba_respect_stops <- [1.0];
+		proba_use_linked_road <- 0.0;
+
+		lane_change_limit <- 2;			
+		linked_lane_limit <- 0;
 	}
-
-	aspect default {
-		switch type {
-			match "car" {
-				draw rectangle(10*sizeCoeff, 5*sizeCoeff) rotate: heading color: palet[CAR] depth: 5*sizeCoeff;
-			}
-
-			match "motorbike" {
-				draw rectangle(5*sizeCoeff, 2*sizeCoeff) rotate: heading color: palet[MOTOBYKE] depth: 7*sizeCoeff;
-			}
-
-		}
-
-	}
-
 }
 
 species building schedules: [] {
