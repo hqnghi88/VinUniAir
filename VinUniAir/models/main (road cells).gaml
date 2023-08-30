@@ -20,14 +20,14 @@ global {
 	float MAX_P <- 10.0;
 	// Load shapefiles
 	string resources_dir <- "../includes/bigger_map/";
-	shape_file roads_shape_file <- shape_file(resources_dir + "roads.shp");
+	shape_file roads_shape_file <- shape_file(resources_dir + "vroads.shp");
 	//	shape_file dummy_roads_shape_file <- shape_file(resources_dir + "vinuniroad.shp");
-	shape_file buildings_shape_file <- shape_file(resources_dir + "buildings.shp");
+	shape_file buildings_shape_file <- shape_file(resources_dir + "onha.shp");
 	shape_file intersect0_shape_file <- shape_file("../includes/bigger_map/oo.shp");
 	//	shape_file road_cells_shape_file <- shape_file(resources_dir + "road_cells.shp");
 	//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
 	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
-	geometry shape <- envelope(roads_shape_file);
+	geometry shape <- envelope(buildings_shape_file);
 	//	list<road> open_roads;
 	float traffic_light_interval parameter: 'Traffic light interval' init: 60 #s;
 
@@ -82,9 +82,9 @@ global {
 			depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 10 + 10;
 			texture <- textures[rnd(9)];
 		}
-
+//		save building to:"../includes/bigger_map/onha.shp" crs:3857 format:shp;
 		//save building to:"../includes/bigger_map/buildings.shp" format:"shp" crs:"3857";
-		//save road to:"../includes/bigger_map/roads.shp" format:"shp" crs:"3857";
+//		save road to:"../includes/bigger_map/rroads.shp" format:"shp" crs:"3857";
 		//		create decoration_building from: buildings_admin_shape_file;
 		//		create dummy_road from: dummy_roads_shape_file;
 		//		create natural from: naturals_shape_file;
@@ -307,9 +307,9 @@ experiment exp {
 	parameter "Number of cars" var: n_cars <- 50 min: 0 max: 250;
 	parameter "Number of motorbikes" var: n_motorbikes <- 100 min: 0 max: 500;
 	output {
-		display main type: opengl background: #white axes: false {
-			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};
-			image ("../includes/bigger_map/vin.png");
+		display main type: opengl background: #black axes: false {
+//			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};
+			image ("../includes/bigger_map/oceanpark.png")  ;
 			//			species vehicle;
 			species road;
 			//			species natural;
