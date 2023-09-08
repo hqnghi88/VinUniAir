@@ -15,4 +15,61 @@
 		<nature>org.eclipse.xtext.ui.shared.xtextNature</nature>
 		<nature>msi.gama.application.gamaNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>external/1280x904-1209964097513094670</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+streets-v12+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+1280x904-1209964097513094670</locationURI>
+		</link>
+		<link>
+			<name>external/1280x904-7778533860447524686</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+streets-v12+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+1280x904-7778533860447524686</locationURI>
+		</link>
+		<link>
+			<name>external/1280x9044490467791253474354</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+streets-v12+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+1280x9044490467791253474354</locationURI>
+		</link>
+		<link>
+			<name>external/1280x9046743087734484709172</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+streets-v12+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+1280x9046743087734484709172</locationURI>
+		</link>
+		<link>
+			<name>external/1280x9048756443362843768636</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+streets-v12+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+1280x9048756443362843768636</locationURI>
+		</link>
+		<link>
+			<name>external/200x2006743087734484709172</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+satellite-v9+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+200x2006743087734484709172</locationURI>
+		</link>
+		<link>
+			<name>external/500x3536743087734484709172</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+satellite-v9+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+500x3536743087734484709172</locationURI>
+		</link>
+		<link>
+			<name>external/500x353@2x6743087734484709172</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+satellite-v9+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+500x353@2x6743087734484709172</locationURI>
+		</link>
+		<link>
+			<name>external/copy of 1280x904-7778533860447524686</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+streets-v12+_+static+_+%5B105%252E93916169971295,20%252E98776569973214,105%252E94918339971682,20%252E99437559973104%5D+_+1280x904-7778533860447524686</locationURI>
+		</link>
+		<link>
+			<name>external/copy of 1280x9046743087734484709172</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/api.mapbox.com+_++_+styles+_+v1+_+mapbox+_+satellite-v9+_+static+_+%5B105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104%5D+_+1280x9046743087734484709172</locationURI>
+		</link>
+		<link>
+			<name>external/map-8269728405580284894</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/www.mapquestapi.com+_++_+staticmap+_+v5+_+map-8269728405580284894</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
