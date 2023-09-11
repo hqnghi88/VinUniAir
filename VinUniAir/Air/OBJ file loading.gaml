@@ -144,7 +144,7 @@ species base3d {
 	aspect default {
 	//		draw ss color: #red;
 		float ww <- ss.width;
-		float hh <- ss.height;
+		float hh <- ss.height; 
 		draw (box({1, hh, 41}) at_location {0.5, hh / 2, 0}) color: #red;
 		draw (box({1, hh, 41}) at_location {ww - 0.5, hh / 2, 0}) color: #red;
 		draw (box({ww, 1, 41}) at_location {ww / 2, 0.5, 0}) color: #red;
