@@ -11,13 +11,13 @@ import "../global_vars.gaml"
 global {
 	float time_vehicles_move;
 	int nb_recompute_path;
-	float lane_width <- 1.7;  
-	list<intersection> non_deadend_nodes;	
+	float lane_width <- 1.7;
+	list<intersection> non_deadend_nodes;
+	float scale_size <- 2.0;
 }
 
-species road schedules: []  skills: [road_skill] {
-	rgb color <- #white; 
-
+species road schedules: [] skills: [road_skill] {
+	rgb color <- #white;
 	string type;
 	bool oneway;
 	bool s1_closed;
@@ -31,19 +31,19 @@ species road schedules: []  skills: [road_skill] {
 	}
 
 	aspect default {
-		if (display_mode = 0) {
-			if (closed) {
-				draw shape + 50 color: palet[CLOSED_ROAD_TRAFFIC];
-			} else {
-				draw shape + 20 / (speed_coeff) color: (speed_coeff = 1.0) ? palet[NOT_CONGESTED_ROAD] : palet[CONGESTED_ROAD] /*end_arrow: 10*/;
-			}
-
-		} else {
-			if (closed) {
-				draw shape + 50 color: palet[CLOSED_ROAD_POLLUTION];
-			}
-
-		}
+	//		if (display_mode = 0) {
+	//			if (closed) {
+	//				draw shape + 50 color: palet[CLOSED_ROAD_TRAFFIC];
+	//			} else {
+		draw shape + 2 / (speed_coeff) color: (speed_coeff = 1.0) ? palet[NOT_CONGESTED_ROAD] : palet[CONGESTED_ROAD] /*end_arrow: 10*/;
+		//			}
+		//
+		//		} else {
+		//			if (closed) {
+		//				draw shape + 50 color: palet[CLOSED_ROAD_POLLUTION];
+		//			}
+		//
+		//		}
 
 		//		if (closed) {
 		//			draw shape + 5 color: palet[CLOSED_ROAD];
@@ -113,11 +113,10 @@ species road schedules: []  skills: [road_skill] {
 //	}
 //
 //}
-
 species intersection skills: [intersection_skill] {
 	rgb color;
 	bool is_traffic_signal;
-	float time_to_change <- 30#s;
+	float time_to_change <- 30 #s;
 	float counter <- rnd(time_to_change);
 	list<road> ways1;
 	list<road> ways2;
@@ -133,7 +132,9 @@ species intersection skills: [intersection_skill] {
 			} else {
 				do to_red;
 			}
+
 		}
+
 	}
 
 	action compute_crossing {
@@ -148,14 +149,18 @@ species intersection skills: [intersection_skill] {
 				if (ang > 45 and ang < 135) or (ang > 225 and ang < 315) {
 					ways2 << road(rd);
 				}
+
 			}
+
 		}
 
 		loop rd over: roads_in {
 			if not (rd in ways2) {
 				ways1 << road(rd);
 			}
+
 		}
+
 	}
 
 	action to_green {
@@ -179,7 +184,9 @@ species intersection skills: [intersection_skill] {
 			} else {
 				do to_green;
 			}
+
 		}
+
 	}
 
 	aspect base {
@@ -188,44 +195,46 @@ species intersection skills: [intersection_skill] {
 		} else {
 			draw circle(1) color: color;
 		}
+
 	}
+
 }
 
 species base_vehicle skills: [driving] {
 	rgb color <- rnd_color(255);
 	graph road_graph;
-	
 	string type;
 	point compute_position {
-		// Shifts the position of the vehicle perpendicularly to the road,
-		// in order to visualize different lanes
+	// Shifts the position of the vehicle perpendicularly to the road,
+	// in order to visualize different lanes
 		if (current_road != nil) {
-			float dist <- (road(current_road).num_lanes - current_lane -
-				mean(range(num_lanes_occupied - 1)) - 0.5) * lane_width;
+			float dist <- (road(current_road).num_lanes - current_lane - mean(range(num_lanes_occupied - 1)) - 0.5) * lane_width * scale_size;
 			if violating_oneway {
 				dist <- -dist;
 			}
-		 	point shift_pt <- {cos(heading + 90) * dist, sin(heading + 90) * dist};	
-		
+
+			point shift_pt <- {cos(heading + 90) * dist, sin(heading + 90) * dist};
 			return location + shift_pt;
 		} else {
 			return {0, 0};
 		}
+
 	}
-	
+
 	aspect base {
 		if (current_road != nil) {
 			point pos <- compute_position();
-				
-			draw rectangle(vehicle_length, lane_width * num_lanes_occupied) 
-				at: pos color: color rotate: heading border: #black;
-			draw triangle(lane_width * num_lanes_occupied) 
-				at: pos color: #white rotate: heading + 90 border: #black;
+			draw rectangle(vehicle_length * scale_size, lane_width * num_lanes_occupied * scale_size) at: pos color: color rotate: heading border: #black;
+			//			draw triangle(lane_width * num_lanes_occupied*10) 
+			//				at: pos color: #white rotate: heading + 90 border: #black;
 		}
+
 	}
+
 }
 
 species vehicle_random parent: base_vehicle {
+
 	init {
 		road_graph <- road_network;
 		location <- one_of(non_deadend_nodes).location;
@@ -237,42 +246,43 @@ species vehicle_random parent: base_vehicle {
 		do unregister;
 		location <- one_of(non_deadend_nodes).location;
 	}
-	
+
 	reflex commute {
 		do drive_random graph: road_graph;
 	}
+
 }
 
 species motorbike_random parent: vehicle_random {
+
 	init {
 		vehicle_length <- 3.9 #m;
 		num_lanes_occupied <- 1;
 		max_speed <- (1 + rnd(20)) #km / #h;
-
 		proba_block_node <- 0.0;
 		proba_respect_priorities <- 1.0;
 		proba_respect_stops <- [1.0];
 		proba_use_linked_road <- 0.5;
-
-		lane_change_limit <- 2;		
+		lane_change_limit <- 2;
 		linked_lane_limit <- 1;
 	}
+
 }
 
 species car_random parent: vehicle_random {
+
 	init {
 		vehicle_length <- 6.8 #m;
 		num_lanes_occupied <- 2;
 		max_speed <- (2 + rnd(10)) #km / #h;
-				
 		proba_block_node <- 0.0;
 		proba_respect_priorities <- 1.0;
 		proba_respect_stops <- [1.0];
 		proba_use_linked_road <- 0.0;
-
-		lane_change_limit <- 2;			
+		lane_change_limit <- 2;
 		linked_lane_limit <- 0;
 	}
+
 }
 
 species building schedules: [] {
@@ -291,9 +301,10 @@ species building schedules: [] {
 
 	}
 
-	aspect border{
-		draw shape border:#blue wireframe:true color:#blue;
+	aspect border {
+		draw shape border: #blue wireframe: true color: #blue;
 	}
+
 	aspect default {
 		if (display_mode = 0) {
 			draw shape texture: [roof_texture.path, texture.path] depth: depth color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : palet[BUILDING_BASE] /*border: #darkgrey*/

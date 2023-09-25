@@ -40,10 +40,10 @@ global {
 	float MAX_P <- 10.0;
 	// Load shapefiles
 	string resources_dir <- "../includes/bigger_map/";
-	shape_file roads_shape_file <- shape_file(resources_dir + "vroads.shp");
+	shape_file roads_shape_file <- shape_file( "../includes/bigger_map/vroads.shp");
 	//	shape_file dummy_roads_shape_file <- shape_file(resources_dir + "vinuniroad.shp");
-	shape_file buildings_shape_file <- shape_file(resources_dir + "onha.shp");
-	shape_file intersect0_shape_file <- shape_file("../includes/bigger_map/oo.shp");
+	shape_file buildings_shape_file <- shape_file( "../includes/bigger_map/onha.shp");
+	shape_file intersect0_shape_file <- shape_file("../includes/bigger_map/ii.shp");
 	//	shape_file road_cells_shape_file <- shape_file(resources_dir + "road_cells.shp");
 	//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
 	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
@@ -70,7 +70,7 @@ global {
 		map_center <-""+loc.points[0].y+","+loc.points[0].x+","+loc.points[2].y+","+loc.points[2].x;
 //		write loc;
 		write map_center;
-		do load_map;
+//		do load_map;
 		
 		
 		sizeCoeff <- 1;
@@ -306,7 +306,7 @@ global {
 	//		time_diffuse_pollutants <- 0.0;
 	//	}
 	float decrease_coeff <- 0.9;
-	int size <- 300;
+	int size <- 100;
 	field instant_heatmap <- field(size, size);
 
 	reflex update {
@@ -349,18 +349,18 @@ experiment exp {
 	output {
 		display main type: opengl background: #black axes: false {
 //			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};
-//			image ("../includes/bigger_map/oceanpark.png")  ;
+			image ("../includes/bigger_map/oceanpark.png")  ;
 
-			graphics toto {
-				draw static_map_request;
-			}
+//			graphics toto {
+//				draw static_map_request;
+//			}
 			//			species vehicle;
 			species road;
 			//			species natural;
 			species building;
 			species car_random aspect: base;
 			species motorbike_random aspect: base;
-			species intersection aspect: base;
+//			species intersection aspect: base;
 			//			species decoration_building;
 			//			species dummy_road;
 			//			species progress_bar;
@@ -369,7 +369,7 @@ experiment exp {
 			//			light #default type:#point intensity:hsb(0,0,1) location:{world.shape.width*0.5+ world.shape.width*1.5*sin(time*2),world.shape.width*0.5,world.shape.width*cos(time*2)} show:false dynamic:true;
 
 			//			grid pollutant_grid elevation:pollution<0?0.0:pollution/10 transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
-			mesh instant_heatmap scale: 1 triangulation: true transparency: 0.5 color: palette([#white, #white, #orange, #orange, #red, #red, #red]) smooth: 2 position: {0, 0, -0.0001};
+			mesh instant_heatmap scale: 1 triangulation: true transparency: 0.5 color: palette([#white, #white, #orange, #orange, #red, #red, #red]) smooth: 2 position: {0, 0, -0.0002};
 		}
 
 	}

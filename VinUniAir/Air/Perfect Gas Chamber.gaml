@@ -181,8 +181,7 @@ species particles skills: [dynamic_body] {
 
 }
 
-experiment "Gas Chamber" type: gui {
-
+experiment "Chamber" type: gui {
 // Allows to play with the step of the simulation (and physics step)
 	parameter "Physics resolution step (in sec)" var: step min: 0.001 max: 0.1;
 	// With this command, the user can destroy one of the walls at random
