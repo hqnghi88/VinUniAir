@@ -13,7 +13,7 @@ global {
 	int nb_recompute_path;
 	float lane_width <- 1.7;
 	list<intersection> non_deadend_nodes;
-	float scale_size <- 2.0;
+	float scale_size <- 1.0;
 }
 
 species road schedules: [] skills: [road_skill] {
@@ -191,9 +191,9 @@ species intersection skills: [intersection_skill] {
 
 	aspect base {
 		if (is_traffic_signal) {
-			draw circle(1) color: color_fire;
+			draw circle(2) depth:15 color: color_fire;
 		} else {
-			draw circle(1) color: color;
+//			draw circle(2) depth:15  color: color;
 		}
 
 	}
@@ -224,7 +224,7 @@ species base_vehicle skills: [driving] {
 	aspect base {
 		if (current_road != nil) {
 			point pos <- compute_position();
-			draw rectangle(vehicle_length * scale_size, lane_width * num_lanes_occupied * scale_size) at: pos color: color rotate: heading border: #black;
+			draw rectangle(vehicle_length * scale_size, lane_width * num_lanes_occupied * scale_size) at: pos color: color rotate: heading depth: 1*sizeCoeff border: #black;
 			//			draw triangle(lane_width * num_lanes_occupied*10) 
 			//				at: pos color: #white rotate: heading + 90 border: #black;
 		}
@@ -306,13 +306,13 @@ species building schedules: [] {
 	}
 
 	aspect default {
-		if (display_mode = 0) {
-			draw shape texture: [roof_texture.path, texture.path] depth: depth color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : palet[BUILDING_BASE] /*border: #darkgrey*/
-			/*depth: height * 10*/;
-		} else {
+//		if (display_mode = 0) {
+//			draw shape texture: [roof_texture.path, texture.path] depth: depth color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : palet[BUILDING_BASE] /*border: #darkgrey*/
+//			/*depth: height * 10*/;
+//		} else {
 			draw shape texture: [roof_texture.path, texture.path] color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : world.get_pollution_color(aqi) /*border: #darkgrey*/ depth:
-			height * 10;
-		}
+			depth;
+//		}
 
 	}
 
