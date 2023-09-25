@@ -16,11 +16,13 @@ global {
 	// Simulation parameters
 	int n_cars;
 	int n_motorbikes;
+	int n_taxi;
 	int road_scenario;
 	int display_mode<-1;
 	// Save params' old values to detect value changes
 	int n_cars_prev;
 	int n_motorbikes_prev;
+	int n_taxi_prev;
 	int road_scenario_prev;
 	int display_mode_prev;
 	

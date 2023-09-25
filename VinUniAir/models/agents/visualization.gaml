@@ -46,9 +46,9 @@ species progress_bar schedules: [] {
 		draw rect(x, y, length_filled, height) color: #orange at: {x+ length_filled / 2, y + height / 2, Z_LVL2};
 		draw rect(x + length_filled, y, length_unfilled, height) color: #white at: {(x+ length_filled) + length_unfilled / 2, y + height / 2, Z_LVL2};
 		
-		draw(title + ": ") at: {x, y - 50, Z_LVL2} font: font(size_title) color: palet[TEXT_COLOR];
-		draw(left_label) at: {x - 20, y + 160, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
-		draw(right_label) at: {x + width - 20, y + 160, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
+		draw(title + ": ") at: {x, y - 10, Z_LVL2} font: font(size_title) color: palet[TEXT_COLOR];
+		draw(left_label) at: {x - 5, y + 40, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
+		draw(right_label) at: {x + width - 20, y + 40, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
 	}
 }
 

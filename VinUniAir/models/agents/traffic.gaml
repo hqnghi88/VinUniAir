@@ -13,7 +13,6 @@ global {
 	int nb_recompute_path;
 	float lane_width <- 1.7;
 	list<intersection> non_deadend_nodes;
-	float scale_size <- 1.0;
 }
 
 species road schedules: [] skills: [road_skill] {
@@ -165,7 +164,7 @@ species intersection skills: [intersection_skill] {
 
 	action to_green {
 		stop[0] <- ways2;
-		color_fire <- #green;
+		color_fire <- #yellow;
 		is_green <- true;
 	}
 
@@ -191,9 +190,9 @@ species intersection skills: [intersection_skill] {
 
 	aspect base {
 		if (is_traffic_signal) {
-			draw circle(2) depth:15 color: color_fire;
+			draw circle(8) depth: 5 color: color_fire;
 		} else {
-//			draw circle(2) depth:15  color: color;
+		//			draw circle(2) depth:15  color: color;
 		}
 
 	}
@@ -203,12 +202,12 @@ species intersection skills: [intersection_skill] {
 species base_vehicle skills: [driving] {
 	rgb color <- rnd_color(255);
 	graph road_graph;
-	string type;
+	string type; 
 	point compute_position {
 	// Shifts the position of the vehicle perpendicularly to the road,
 	// in order to visualize different lanes
 		if (current_road != nil) {
-			float dist <- (road(current_road).num_lanes - current_lane - mean(range(num_lanes_occupied - 1)) - 0.5) * lane_width * scale_size;
+			float dist <- (road(current_road).num_lanes - current_lane - mean(range(num_lanes_occupied - 1)) - 0.5) * lane_width * sizeCoeff;
 			if violating_oneway {
 				dist <- -dist;
 			}
@@ -219,12 +218,12 @@ species base_vehicle skills: [driving] {
 			return {0, 0};
 		}
 
-	}
-
+	} 
+	
 	aspect base {
 		if (current_road != nil) {
 			point pos <- compute_position();
-			draw rectangle(vehicle_length * scale_size, lane_width * num_lanes_occupied * scale_size) at: pos color: color rotate: heading depth: 1*sizeCoeff border: #black;
+			draw rectangle(vehicle_length * sizeCoeff, lane_width * num_lanes_occupied * sizeCoeff) at: pos color: color rotate: heading depth: 1 * sizeCoeff border: #black;
 			//			draw triangle(lane_width * num_lanes_occupied*10) 
 			//				at: pos color: #white rotate: heading + 90 border: #black;
 		}
@@ -234,6 +233,7 @@ species base_vehicle skills: [driving] {
 }
 
 species vehicle_random parent: base_vehicle {
+	float aqh <- 0.0;
 
 	init {
 		road_graph <- road_network;
@@ -254,11 +254,12 @@ species vehicle_random parent: base_vehicle {
 }
 
 species motorbike_random parent: vehicle_random {
+	float aqh <- 15 + rnd(50.0);
 
 	init {
 		vehicle_length <- 3.9 #m;
 		num_lanes_occupied <- 1;
-		max_speed <- (1 + rnd(20)) #km / #h;
+		max_speed <- (10 + rnd(20)) #km / #h;
 		proba_block_node <- 0.0;
 		proba_respect_priorities <- 1.0;
 		proba_respect_stops <- [1.0];
@@ -270,17 +271,42 @@ species motorbike_random parent: vehicle_random {
 }
 
 species car_random parent: vehicle_random {
+	float aqh <- 20 + rnd(100.0);
 
 	init {
 		vehicle_length <- 6.8 #m;
 		num_lanes_occupied <- 2;
-		max_speed <- (2 + rnd(10)) #km / #h;
+		max_speed <- (20 + rnd(10)) #km / #h;
 		proba_block_node <- 0.0;
 		proba_respect_priorities <- 1.0;
 		proba_respect_stops <- [1.0];
 		proba_use_linked_road <- 0.0;
 		lane_change_limit <- 2;
 		linked_lane_limit <- 0;
+	}
+
+}
+
+species taxi_random parent: vehicle_random {
+	float aqh <- 5 + rnd(2.0);
+	rgb color <- brewer_colors("Greens")[int(13 - energy)];
+	float energy <- 1+rnd(11.0);
+
+	init {
+		vehicle_length <- 6.8 #m;
+		num_lanes_occupied <- 2;
+		max_speed <- (10 + rnd(10)) #km / #h;
+		proba_block_node <- 0.0;
+		proba_respect_priorities <- 1.0;
+		proba_respect_stops <- [1.0];
+		proba_use_linked_road <- 0.0;
+		lane_change_limit <- 2;
+		linked_lane_limit <- 0;
+	}
+
+	reflex ss {
+		energy <- energy > 2 ? energy - 0.1 : 12;
+		color <- brewer_colors("Greens")[int(13 - energy)];
 	}
 
 }
@@ -306,13 +332,12 @@ species building schedules: [] {
 	}
 
 	aspect default {
-//		if (display_mode = 0) {
-//			draw shape texture: [roof_texture.path, texture.path] depth: depth color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : palet[BUILDING_BASE] /*border: #darkgrey*/
-//			/*depth: height * 10*/;
-//		} else {
-			draw shape texture: [roof_texture.path, texture.path] color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : world.get_pollution_color(aqi) /*border: #darkgrey*/ depth:
-			depth;
-//		}
+	//		if (display_mode = 0) {
+	//			draw shape texture: [roof_texture.path, texture.path] depth: depth color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : palet[BUILDING_BASE] /*border: #darkgrey*/
+	//			/*depth: height * 10*/;
+	//		} else {
+		draw shape texture: [roof_texture.path, texture.path] color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : world.get_pollution_color(aqi) /*border: #darkgrey*/ depth: depth;
+		//		}
 
 	}
 

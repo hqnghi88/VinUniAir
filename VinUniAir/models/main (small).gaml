@@ -12,31 +12,23 @@ import "agents/visualization.gaml"
 
 global {
 
-// Benchmark execution time
-	bool benchmark <- true;
-	float time_absorb_pollutants;
-	float time_diffuse_pollutants;
-	float time_create_congestions;
+// Benchmark execution time 
 	float step <- 1 #s;
-	float MAX_P <- 10.0;
 	// Load shapefiles  
-	shape_file roads_shape_file <- shape_file("../includes/bigger_map/roads.shp"); 
+	shape_file roads_shape_file <- shape_file("../includes/bigger_map/roads.shp");
 	shape_file buildings_shape_file <- shape_file("../includes/bigger_map/buildings.shp");
-	shape_file intersect0_shape_file <- shape_file("../includes/bigger_map/oo.shp");
-	//	shape_file road_cells_shape_file <- shape_file(resources_dir + "road_cells.shp");
-	//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
-	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
+	shape_file intersect0_shape_file <- shape_file("../includes/bigger_map/inter.shp");
 	geometry shape <- envelope(roads_shape_file);
 	//	list<road> open_roads;
-	float traffic_light_interval parameter: 'Traffic light interval' init: 60 #s;
+	float traffic_light_interval<-6#s;//parameter: 'Traffic light interval' init: 60 #s;
 
 	//	list<pollutant_grid> active_cells;
 	init {
 		sizeCoeff <- 1;
-		create intersection from: intersect0_shape_file {
-					is_traffic_signal<-flip(0.2)?true:false;
-		//				with: [is_traffic_signal::(read("type") = "traffic_signals")] {
-			time_to_change <- traffic_light_interval;
+		create intersection from: intersect0_shape_file with: [is_traffic_signal::(read("TYPE") = true)] {
+//			is_traffic_signal <- false;
+			//				with: [is_traffic_signal::(read("type") = "traffic_signals")] {
+			time_to_change <- traffic_light_interval / 2 + rnd(traffic_light_interval);
 		}
 
 		create road from: roads_shape_file {
@@ -50,22 +42,9 @@ global {
 				linked_road <- myself;
 				myself.linked_road <- self;
 			}
-			//			if (!oneway) {
-			//				create road {
-			//					shape <- polyline(reverse(myself.shape.points));
-			//					name <- myself.name;
-			//					type <- myself.type;
-			//					s1_closed <- myself.s1_closed;
-			//					s2_closed <- myself.s2_closed;
-			//				}
-			//
-			//			}
 
 		}
 
-		//		open_roads <- list(road);
-		//		map<road, float> road_weights <- road as_map (each::each.shape.perimeter);
-		//		road_network <- as_edge_graph(road) with_weights road_weights;
 		map edge_weights <- road as_map (each::each.shape.perimeter);
 		road_network <- as_driving_graph(road, intersection) with_weights edge_weights;
 
@@ -81,27 +60,42 @@ global {
 			depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 5 + 10;
 			texture <- textures[rnd(9)];
 		}
-		//		save building to:"../includes/bigger_map/onha.shp" crs:3857 format:shp;
-		//save building to:"../includes/bigger_map/buildings.shp" format:"shp" crs:"3857";
-		//		save road to:"../includes/bigger_map/rroads.shp" format:"shp" crs:"3857";
-		//		create decoration_building from: buildings_admin_shape_file;
-		//		create dummy_road from: dummy_roads_shape_file;
-		//		create natural from: naturals_shape_file;
-		//		create progress_bar with: [x::-700, y::1800, width::500, height::100, max_val::500, title::"Cars", left_label::"0", right_label::"500"];
-		//		create progress_bar with: [x::-700, y::2000, width::500, height::100, max_val::1500, title::"Motorbikes", left_label::"0", right_label::"1500"];
-		//		create line_graph with: [x::2600, y::1400, width::1300, height::1000, label::"Hourly AQI"];
 
-		// Init pollutant cells
-		//		create road_cell from: road_cells_shape_file {
-		//			neighbors <- road_cell at_distance 10 #cm;
-		//			affected_buildings <- building at_distance 50 #m;
-		//		}
+		create progress_bar with: [x::1300, y::20, width::250, height::20, max_val::500, title::"Cars", left_label::"0", right_label::"Max"];
+		create progress_bar with: [x::1300, y::100, width::250, height::20, max_val::500, title::"Motorbikes", left_label::"0", right_label::"Max"];
+		create progress_bar with: [x::1300, y::180, width::500, height::20, max_val::1000, title::"Green Taxi", left_label::"0", right_label::"Max"];
+		//		create param_indicator with: [x::1300, y::850, size::22, name::"Road scenario", value::"No blocked roads", with_RT::true];
+		//		create param_indicator with: [x::1300, y::1050, size::22, name::"Display mode", value::"Traffic"];
 
-		//		active_cells <- pollutant_grid where (!empty(road overlapping each));
-		//		ask active_cells {
-		//			active <- true;
-		//		}
+		//		create background with: [x::2450, y::1000, width::1250, height::1500, alpha::0.6];
+		//		create line_graph with: [x::2500, y::1400, width::1200, height::1000, label::"Hourly AQI"];
+		create line_graph_aqi with: [x::1300, y::250, width::500, height::200, label::"Hourly AQI"];
+		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
+		create param_indicator with: [x::1300, y::460, size::30, name:: "Time", value:: "00:00:00", with_box::true, width::500, height::20];
+	}
 
+	reflex update_time {
+		int h <- current_date.hour;
+		int m <- current_date.minute;
+		int s <- current_date.second;
+		string hh <- ((h < 10) ? "0" : "") + string(h);
+		string mm <- ((m < 10) ? "0" : "") + string(m);
+		string ss <- ((s < 10) ? "0" : "") + string(s);
+		string t <- hh + ":" + mm + ":" + ss;
+		ask (param_indicator where (each.name = "Time")) {
+			do update(t);
+		}
+
+	}
+
+	reflex calculate_aqi when: every(refreshing_rate_plot) { //every(1 #minute) {
+		float aqi <- max(instant_heatmap);
+		ask line_graph_aqi {
+			do update(aqi / 5);
+		}
+		//		 ask indicator_health_concern_level {
+		//		 	do update(aqi);
+		//		 }
 	}
 
 	action update_vehicle_population (string type, int delta) {
@@ -123,13 +117,26 @@ global {
 		//				create car_random number: delta;			
 			list<car_random> vehicles <- list(car_random);
 			if (delta < 0) {
-				ask -delta among motorbike_random {
+				ask -delta among car_random {
 					do die;
 				}
 
 			} else {
-			//				create motorbike_random number: delta;	
 				create car_random number: delta with: [type:: "car"];
+			}
+
+		}
+
+		if (type = "taxi") {
+		//				create car_random number: delta;			
+			list<taxi_random> vehicles <- list(taxi_random);
+			if (delta < 0) {
+				ask -delta among taxi_random {
+					do die;
+				}
+
+			} else {
+				create taxi_random number: delta with: [type:: "taxi"];
 			}
 
 		}
@@ -139,19 +146,31 @@ global {
 	reflex update_car_population when: n_cars != n_cars_prev {
 		int delta_cars <- n_cars - n_cars_prev;
 		do update_vehicle_population("car", delta_cars);
-		//		ask first(progress_bar where (each.title = "Cars")) {
-		//			do update(float(n_cars));
-		//		}
+		ask first(progress_bar where (each.title = "Cars")) {
+			do update(float(n_cars));
+		}
+
 		n_cars_prev <- n_cars;
 	}
 
 	reflex update_motorbike_population when: n_motorbikes != n_motorbikes_prev {
 		int delta_motorbikes <- n_motorbikes - n_motorbikes_prev;
 		do update_vehicle_population("motorbike", delta_motorbikes);
-		//		ask first(progress_bar where (each.title = "Motorbikes")) {
-		//			do update(float(n_motorbikes));
-		//		}
+		ask first(progress_bar where (each.title = "Motorbikes")) {
+			do update(float(n_motorbikes));
+		}
+
 		n_motorbikes_prev <- n_motorbikes;
+	}
+
+	reflex update_taxi_population when: n_taxi != n_taxi_prev {
+		int delta_taxi <- n_taxi - n_taxi_prev;
+		do update_vehicle_population("taxi", delta_taxi);
+		ask first(progress_bar where (each.title = "Green Taxi")) {
+			do update(float(n_taxi));
+		}
+
+		n_taxi_prev <- n_taxi;
 	}
 
 	//	reflex update_road_scenario when: road_scenario != road_scenario_prev {
@@ -202,57 +221,57 @@ global {
 	//		road_network <- road_network with_weights road_weights;
 	//		time_create_congestions <- machine_time - start;
 	//	}
-	matrix<float> mat_diff <- matrix([[1 / 20, 1 / 20, 1 / 20], [1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], [1 / 20, 1 / 20, 1 / 20]]);
-
-	reflex produce_pollutant {
-	// Absorb pollutants emitted by vehicles
-		ask building parallel: true {
-			aqi <- 0.0;
-		}
-
-		ask road_cell {
-			write self;
-			list<car_random> vehicles_in_cell <- car_random inside self;
-			loop v over: vehicles_in_cell {
-				if (is_number(v.real_speed)) {
-					float dist_traveled <- v.real_speed * step / #km;
-					co <- co + dist_traveled * EMISSION_FACTOR[v.type]["CO"];
-					nox <- nox + dist_traveled * EMISSION_FACTOR[v.type]["NOx"];
-					so2 <- so2 + dist_traveled * EMISSION_FACTOR[v.type]["SO2"];
-					pm <- pm + dist_traveled * EMISSION_FACTOR[v.type]["PM"];
-				}
-
-			}
-
-			//			time_absorb_pollutants <- time_absorb_pollutants + (machine_time - start);
-
-			// Diffuse pollutants to neighbor cells
-			ask neighbors {
-				self.co <- self.co + pollutant_diffusion * myself.co;
-				self.nox <- self.nox + pollutant_diffusion * myself.nox;
-				self.so2 <- self.so2 + pollutant_diffusion * myself.so2;
-				self.pm <- self.pm + pollutant_diffusion * myself.pm;
-			}
-
-			co <- co * (1 - pollutant_diffusion * length(neighbors));
-			nox <- nox * (1 - pollutant_diffusion * length(neighbors));
-			so2 <- so2 * (1 - pollutant_diffusion * length(neighbors));
-			pm <- pm * (1 - pollutant_diffusion * length(neighbors));
-
-			// Decay pollutants
-			co <- pollutant_decay_rate * co;
-			nox <- pollutant_decay_rate * nox;
-			so2 <- pollutant_decay_rate * so2;
-			pm <- pollutant_decay_rate * pm;
-			//			time_diffuse_pollutants <- time_diffuse_pollutants + (machine_time - start);
-			list<building> buildings <- list<building>(self.affected_buildings);
-			ask buildings {
-				self.aqi <- self.aqi + myself.aqi;
-			}
-
-		}
-
-	}
+	//	matrix<float> mat_diff <- matrix([[1 / 20, 1 / 20, 1 / 20], [1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], [1 / 20, 1 / 20, 1 / 20]]);
+	//
+	//	reflex produce_pollutant {
+	//	// Absorb pollutants emitted by vehicles
+	//		ask building parallel: true {
+	//			aqi <- 0.0;
+	//		}
+	//
+	//		ask road_cell {
+	////			write self;
+	//			list<car_random> vehicles_in_cell <- car_random inside self;
+	//			loop v over: vehicles_in_cell {
+	//				if (is_number(v.real_speed)) {
+	//					float dist_traveled <- v.real_speed * step / #km;
+	//					co <- co + dist_traveled * EMISSION_FACTOR[v.type]["CO"];
+	//					nox <- nox + dist_traveled * EMISSION_FACTOR[v.type]["NOx"];
+	//					so2 <- so2 + dist_traveled * EMISSION_FACTOR[v.type]["SO2"];
+	//					pm <- pm + dist_traveled * EMISSION_FACTOR[v.type]["PM"];
+	//				}
+	//
+	//			}
+	//
+	//			//			time_absorb_pollutants <- time_absorb_pollutants + (machine_time - start);
+	//
+	//			// Diffuse pollutants to neighbor cells
+	//			ask neighbors {
+	//				self.co <- self.co + pollutant_diffusion * myself.co;
+	//				self.nox <- self.nox + pollutant_diffusion * myself.nox;
+	//				self.so2 <- self.so2 + pollutant_diffusion * myself.so2;
+	//				self.pm <- self.pm + pollutant_diffusion * myself.pm;
+	//			}
+	//
+	//			co <- co * (1 - pollutant_diffusion * length(neighbors));
+	//			nox <- nox * (1 - pollutant_diffusion * length(neighbors));
+	//			so2 <- so2 * (1 - pollutant_diffusion * length(neighbors));
+	//			pm <- pm * (1 - pollutant_diffusion * length(neighbors));
+	//
+	//			// Decay pollutants
+	//			co <- pollutant_decay_rate * co;
+	//			nox <- pollutant_decay_rate * nox;
+	//			so2 <- pollutant_decay_rate * so2;
+	//			pm <- pollutant_decay_rate * pm;
+	//			//			time_diffuse_pollutants <- time_diffuse_pollutants + (machine_time - start);
+	//			list<building> buildings <- list<building>(self.affected_buildings);
+	//			ask buildings {
+	//				self.aqi <- self.aqi + myself.aqi;
+	//			}
+	//
+	//		}
+	//
+	//	}
 
 	//	reflex benchmark when: benchmark and every(5 #cycle) {
 	//		write "Vehicles move: " + time_vehicles_move;
@@ -264,14 +283,14 @@ global {
 	//		time_absorb_pollutants <- 0.0;
 	//		time_diffuse_pollutants <- 0.0;
 	//	}
-	float decrease_coeff <- 0.9;
+	float decrease_coeff <- 0.99;
 	int size <- 150;
 	field instant_heatmap <- field(size, size);
 
 	reflex update {
 		instant_heatmap[] <- 0;
-		ask car_random + motorbike_random {
-			instant_heatmap[location] <- instant_heatmap[location] + 150;
+		ask car_random + motorbike_random + taxi_random {
+			instant_heatmap[location] <- instant_heatmap[location] + self.aqh;
 		}
 
 	}
@@ -303,9 +322,10 @@ global {
 //	} 
 //}
 experiment exp {
-	parameter "Number of cars" var: n_cars <- 50 min: 0 max: 250;
-	parameter "Number of motorbikes" var: n_motorbikes <- 100 min: 0 max: 500;
-	output {
+	parameter "Number of cars" var: n_cars <- 0 min: 0 max: 500;
+	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: 500;
+	parameter "Number of greentaxi" var: n_taxi <- 0 min: 0 max: 1000;
+	output synchronized:true{
 		display main type: opengl background: #black axes: false {
 		//			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};
 			image ("../includes/bigger_map/vin.png");
@@ -315,20 +335,32 @@ experiment exp {
 			//			}
 			//			species vehicle;
 			species road;
+			species road position: {1300, 550, 0} size: {0.5, 0.5} {
+				draw shape color: #darkgray;
+			}
+
+			species taxi_random position: {1300, 550, 0} size: {0.5, 0.5} {
+				if (current_road != nil) {
+					point pos <- compute_position();
+					draw circle(4) at: pos color: color;
+				}
+
+			}
+
+			species intersection aspect: base position: {1300, 550, 0} size: {0.5, 0.5} ;
 			//			species natural;
 			species building;
 			species car_random aspect: base;
 			species motorbike_random aspect: base;
-						species intersection aspect: base;
-			//			species decoration_building;
-			//			species dummy_road;
-			//			species progress_bar;
-			//			species line_graph;
-			//	  		light #ambient intensity: 50;
-			//			light #default type:#point intensity:hsb(0,0,1) location:{world.shape.width*0.5+ world.shape.width*1.5*sin(time*2),world.shape.width*0.5,world.shape.width*cos(time*2)} show:false dynamic:true;
-
+			species taxi_random aspect: base;
+			//	species background;
+			species progress_bar;
+			species param_indicator;
+			//		species line_graph;
+			species line_graph_aqi position: {0, 0, -0.001};
+			species indicator_health_concern_level;
 			//			grid pollutant_grid elevation:pollution<0?0.0:pollution/10 transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
-			mesh instant_heatmap scale: 1 triangulation: true transparency: 0.5 color: palette([#white, #white, #orange, #orange, #red, #red, #red]) smooth: 2 position: {0, 0, -0.01};
+			mesh instant_heatmap scale: 1 triangulation: true transparency: 0.5 color: palette([#white, #white, #orange, #orange, #red, #red, #red]) smooth: 2 position: {0, 0, -0.00001};
 		}
 
 	}
