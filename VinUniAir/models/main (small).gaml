@@ -20,14 +20,14 @@ global {
 	shape_file intersect0_shape_file <- shape_file("../includes/bigger_map/inter.shp");
 	geometry shape <- envelope(roads_shape_file);
 	//	list<road> open_roads;
-	float traffic_light_interval<-6#s;//parameter: 'Traffic light interval' init: 60 #s;
+	float traffic_light_interval <- 60 #s; //parameter: 'Traffic light interval' init: 60 #s;
 
 	//	list<pollutant_grid> active_cells;
 	init {
 		sizeCoeff <- 1;
 		create intersection from: intersect0_shape_file with: [is_traffic_signal::(read("TYPE") = true)] {
-//			is_traffic_signal <- false;
-			//				with: [is_traffic_signal::(read("type") = "traffic_signals")] {
+		//			is_traffic_signal <- false;
+		//				with: [is_traffic_signal::(read("type") = "traffic_signals")] {
 			time_to_change <- traffic_light_interval / 2 + rnd(traffic_light_interval);
 		}
 
@@ -91,7 +91,7 @@ global {
 	reflex calculate_aqi when: every(refreshing_rate_plot) { //every(1 #minute) {
 		float aqi <- max(instant_heatmap);
 		ask line_graph_aqi {
-			do update(aqi / 5);
+			do update(aqi * 10);
 		}
 		//		 ask indicator_health_concern_level {
 		//		 	do update(aqi);
@@ -221,7 +221,7 @@ global {
 	//		road_network <- road_network with_weights road_weights;
 	//		time_create_congestions <- machine_time - start;
 	//	}
-	//	matrix<float> mat_diff <- matrix([[1 / 20, 1 / 20, 1 / 20], [1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], [1 / 20, 1 / 20, 1 / 20]]);
+	matrix<float> mat_diff <- matrix([[1 / 20, 1 / 20, 1 / 20], [1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], [1 / 20, 1 / 20, 1 / 20]]);
 	//
 	//	reflex produce_pollutant {
 	//	// Absorb pollutants emitted by vehicles
@@ -287,10 +287,16 @@ global {
 	int size <- 150;
 	field instant_heatmap <- field(size, size);
 
+	reflex diff {
+			diffuse "phero" on: instant_heatmap matrix: mat_diff;
+//		diffuse "trial" on: instant_heatmap;
+	}
+
 	reflex update {
-		instant_heatmap[] <- 0;
+//			instant_heatmap[] <- instant_heatmap[] * decrease_coeff;
+//			instant_heatmap[] <-0;
 		ask car_random + motorbike_random + taxi_random {
-			instant_heatmap[location] <- instant_heatmap[location] + self.aqh;
+			instant_heatmap[location] <- instant_heatmap[location] + self.aqh / 1000;
 		}
 
 	}
@@ -325,7 +331,7 @@ experiment exp {
 	parameter "Number of cars" var: n_cars <- 0 min: 0 max: 500;
 	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: 500;
 	parameter "Number of greentaxi" var: n_taxi <- 0 min: 0 max: 1000;
-	output synchronized:true{
+	output synchronized: true {
 		display main type: opengl background: #black axes: false {
 		//			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};
 			image ("../includes/bigger_map/vin.png");
@@ -347,7 +353,7 @@ experiment exp {
 
 			}
 
-			species intersection aspect: base position: {1300, 550, 0} size: {0.5, 0.5} ;
+			species intersection aspect: base position: {1300, 550, 0} size: {0.5, 0.5};
 			//			species natural;
 			species building;
 			species car_random aspect: base;
@@ -360,7 +366,8 @@ experiment exp {
 			species line_graph_aqi position: {0, 0, -0.001};
 			species indicator_health_concern_level;
 			//			grid pollutant_grid elevation:pollution<0?0.0:pollution/10 transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
-			mesh instant_heatmap scale: 1 triangulation: true transparency: 0.5 color: palette([#white, #white, #orange, #orange, #red, #red, #red]) smooth: 2 position: {0, 0, -0.00001};
+			//			mesh instant_heatmap scale: 1 triangulation: true transparency: 0.5 color: palette([#white, #white, #orange, #orange, #red, #red, #red]) smooth: 2 position: {0, 0, -0.00001};
+			mesh instant_heatmap scale: 1 triangulation: true transparency: 0.5 color: scale([#white::0, #yellow::1, #orange::2, #red::6]) smooth: 1 position: {0, 0, -0.001};
 		}
 
 	}

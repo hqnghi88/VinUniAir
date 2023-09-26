@@ -234,11 +234,21 @@ species base_vehicle skills: [driving] {
 
 species vehicle_random parent: base_vehicle {
 	float aqh <- 0.0;
+	bool recompute_path <- false;
 
 	init {
 		road_graph <- road_network;
 		location <- one_of(non_deadend_nodes).location;
 		right_side_driving <- true;
+	}
+
+	float pollution_from_speed {
+		float returnedValue <- 1.0;		
+		return (returnedValue);
+	}
+
+	float get_pollution {
+		return pollution_from_speed() *1;// coeff_vehicle[type];
 	}
 
 	// Move the vehicle to a random node when it reaches a deadend

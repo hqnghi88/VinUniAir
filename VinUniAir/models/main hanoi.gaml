@@ -79,14 +79,14 @@ global {
 	}
 
 	action update_vehicle_population (string type, int delta) {
-		list<vehicle> vehicles <- vehicle where (each.type = type);
+		list<vehicle_random> vehicles <- vehicle_random where (each.type = type);
 		if (delta < 0) {
-			ask -delta among vehicle {
+			ask -delta among vehicle_random {
 				do die;
 			}
 
 		} else {
-			create vehicle number: delta with: [type:: type];
+			create vehicle_random number: delta with: [type:: type];
 		}
 
 	}
@@ -138,7 +138,7 @@ global {
 
 		map<road, float> road_weights <- open_roads as_map (each::each.shape.perimeter);
 		graph new_road_network <- as_edge_graph(open_roads) with_weights road_weights;
-		ask vehicle {
+		ask vehicle_random {
 			recompute_path <- true;
 		}
 
@@ -149,7 +149,7 @@ global {
 	reflex create_congestions {
 		float start <- machine_time;
 		ask open_roads {
-			list<vehicle> vehicles_on_road <- vehicle at_distance 1;
+			list<vehicle_random> vehicles_on_road <- vehicle_random at_distance 1;
 			int n_cars_on_road <- vehicles_on_road count (each.type = "car");
 			int n_motorbikes_on_road <- vehicles_on_road count (each.type = "motorbike");
 			do update_speed_coeff(n_cars_on_road, n_motorbikes_on_road);
@@ -170,7 +170,7 @@ global {
 
 		ask road_cell {
 			float start <- machine_time;
-			list<vehicle> vehicles_in_cell <- vehicle inside self;
+			list<vehicle_random> vehicles_in_cell <- vehicle_random inside self;
 			loop v over: vehicles_in_cell {
 				if (is_number(v.real_speed)) {
 					float dist_traveled <- v.real_speed * step / #km;
@@ -243,7 +243,7 @@ grid pollutant_grid height: 50 width: 50 neighbors: 8 /*schedules: active_cells*
 	float pollution;
 
 	reflex pollution_increase when: active {
-		list<vehicle> people_on_cell <- vehicle overlapping self;
+		list<vehicle_random> people_on_cell <- vehicle_random overlapping self;
 		pollution <- pollution + sum(people_on_cell accumulate (each.get_pollution()));
 	}
 
@@ -275,12 +275,12 @@ experiment exp {
 			grid pollutant_grid elevation:pollution<0?0.0:pollution transparency: 0.5 triangulation:true;// position:{0,0,-0.0001} ;
 			image ("../includes/bigger_map/hanoi.png");
 			//			mesh instant_heatmap scale: 0  transparency:0.5 color: palette([ #black, #black, #orange, #orange, #red, #red, #red]) smooth: 2 ;
-			species vehicle;
+			species vehicle_random;
 			species road;
 //			species natural;
 			species building aspect:border;
 //			species decoration_building;
-//			species dummy_road;
+//			species dummy_road; 
 //			species progress_bar;
 //			species line_graph;
 		}
