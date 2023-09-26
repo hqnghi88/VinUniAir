@@ -296,7 +296,7 @@ global {
 //			instant_heatmap[] <- instant_heatmap[] * decrease_coeff;
 //			instant_heatmap[] <-0;
 		ask car_random + motorbike_random + taxi_random {
-			instant_heatmap[location] <- instant_heatmap[location] + self.aqh / 1000;
+			instant_heatmap[location] <- instant_heatmap[location] + self.aqh / 100;
 		}
 
 	}
