@@ -99,6 +99,14 @@ global {
 		THRESHOLD_VERY_UNHEALTY::rgb(116,49,121,255),
 		THRESHOLD_HAZARDOUS::rgb(66,18,39,255)
 	];
+	map<rgb,int> zone_colors1 <- [
+		 #green::0,  
+		 #yellow::5,   
+		#orange::10, 
+		#red::15, 
+		rgb(116,49,121,255)::20,
+		rgb(66,18,39,255)::30
+	];
 	map<int,string> thresholds_pollution <- [
 		0::THRESHOLD_GOOD,
 		51::THRESHOLD_MODERATE,
