@@ -20,20 +20,20 @@ global {
 	shape_file intersect0_shape_file <- shape_file("../includes/bigger_map/inter.shp");
 	geometry shape <- envelope(roads_shape_file);
 	//	list<road> open_roads;
-	float traffic_light_interval <- 60 #s; //parameter: 'Traffic light interval' init: 60 #s;
+	float traffic_light_interval <- 180 #s; //parameter: 'Traffic light interval' init: 60 #s;
 
 	//	list<pollutant_grid> active_cells;
 	init {
 		sizeCoeff <- 1;
 		create intersection from: intersect0_shape_file with: [is_traffic_signal::(read("TYPE") = true)] {
-		//			is_traffic_signal <- false;
+					is_traffic_signal <- false;
 		//				with: [is_traffic_signal::(read("type") = "traffic_signals")] {
 			time_to_change <- traffic_light_interval / 2 + rnd(traffic_light_interval);
 		}
 
 		create road from: roads_shape_file {
 		// Create a reverse road if the road is not oneway
-			num_lanes <- rnd(4, 6);
+			num_lanes <- 4;//rnd(4, 6);
 			// Create another road in the opposite direction
 			create road {
 				num_lanes <- myself.num_lanes;
@@ -340,7 +340,6 @@ experiment exp {
 			//				draw static_map_request;
 			//			}
 			//			species vehicle;
-			species road;
 			species road position: {1300, 550, 0} size: {0.5, 0.5} {
 				draw shape color: #darkgray;
 			}
@@ -355,6 +354,8 @@ experiment exp {
 
 			species intersection aspect: base position: {1300, 550, 0} size: {0.5, 0.5};
 			//			species natural;
+			
+			species road;
 			species building;
 			species car_random aspect: base;
 			species motorbike_random aspect: base;

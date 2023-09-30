@@ -238,7 +238,7 @@ species vehicle_random parent: base_vehicle {
 
 	init {
 		road_graph <- road_network;
-		location <- one_of(non_deadend_nodes).location;
+		location <- any_location_in(any(road));//one_of(non_deadend_nodes).location;
 		right_side_driving <- true;
 	}
 

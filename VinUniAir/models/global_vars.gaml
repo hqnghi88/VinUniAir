@@ -100,7 +100,7 @@ global {
 		THRESHOLD_HAZARDOUS::rgb(66,18,39,255)
 	];
 	map<rgb,int> zone_colors1 <- [
-		 #green::0,  
+		 #grey::0,  
 		 #yellow::5,   
 		#orange::10, 
 		#red::15, 
