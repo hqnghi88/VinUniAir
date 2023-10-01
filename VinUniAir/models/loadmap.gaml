@@ -44,11 +44,27 @@ global {
 		geometry loc <- (world.shape CRS_transform ("EPSG:4326"));
 		map_center <- "" + loc.points[0].y + "," + loc.points[0].x + "," + loc.points[2].y + "," + loc.points[2].x;
 		write loc;
-		map_center <- "105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104";
+//		map_center <- "105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104";
 		write map_center;
 		//		do load_map;
+		
+
+		create road from: roads_shape_file {
+		}
+		do loadtraffic;
+		//
+		//		create building from: buildings_shape_file {
+		//		}
+		//save road to:"../includes/bigger_map/hanoi_roads_.shp" format:"shp" crs:"3857";
+
+	}
+	reflex sss when:every(60#cycle){
+		do loadtraffic;
+	}
+	action loadtraffic{
+		ask traffic_incident{do die;}
 		json_file
-		sss <- json_file("https://dev.virtualearth.net/REST/v1/Traffic/Incidents/20.8620,105.7578,21.1284,106.2025?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln");
+		sss <- json_file("https://dev.virtualearth.net/REST/v1/Traffic/Incidents/"+map_center+"?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln");
 		map<string, unknown> c <- sss.contents;
 		list cells <- c["resourceSets"]["resources"];
 		loop mm over: cells {
@@ -66,22 +82,13 @@ global {
 			}
 
 		}
-
-		create road from: roads_shape_file {
-		}
-		//
-		//		create building from: buildings_shape_file {
-		//		}
-		//save road to:"../includes/bigger_map/hanoi_roads_.shp" format:"shp" crs:"3857";
-
 	}
-
 }
 
 species traffic_incident {
 
 	aspect default {
-		draw circle(100) color: #red;
+		draw circle(500) color: #red;
 	}
 
 }
@@ -98,6 +105,7 @@ species road {
 }
 
 experiment exp {
+	float minimum_cycle_duration<-1.0;
 	output {
 		display main type: 3d {
 			image ("../includes/bigger_map/hanoi.png");
