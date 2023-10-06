@@ -23,6 +23,8 @@ global {
 	//	list<pollutant_grid> active_cells;
 	init {
 		sizeCoeff <- 1;
+		write shape.width;
+		write shape.height;
 		create progress_bar with: [x::1300, y::20, width::250, height::20, max_val::500, title::"Cars", left_label::"0", right_label::"Max"];
 		create progress_bar with: [x::1300, y::100, width::250, height::20, max_val::500, title::"Motorbikes", left_label::"0", right_label::"Max"];
 		create progress_bar with: [x::1300, y::180, width::500, height::20, max_val::1000, title::"Green Taxi", left_label::"0", right_label::"Max"];

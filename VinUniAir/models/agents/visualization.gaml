@@ -23,6 +23,7 @@ species progress_bar schedules: [] {
 	float y;
 	float width;
 	float height;
+	float scale<-1.0;
 	// Descriptions
 	string title;
 	string left_label;
@@ -46,9 +47,9 @@ species progress_bar schedules: [] {
 		draw rect(x, y, length_filled, height) color: #orange at: {x+ length_filled / 2, y + height / 2, Z_LVL2};
 		draw rect(x + length_filled, y, length_unfilled, height) color: #white at: {(x+ length_filled) + length_unfilled / 2, y + height / 2, Z_LVL2};
 		
-		draw(title + ": ") at: {x, y - 10, Z_LVL2} font: font(size_title) color: palet[TEXT_COLOR];
-		draw(left_label) at: {x - 5, y + 40, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
-		draw(right_label) at: {x + width - 20, y + 40, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
+		draw(title + ": ") at: {x, y - 10*scale, Z_LVL2} font: font(size_title) color: palet[TEXT_COLOR];
+		draw(left_label) at: {x - 5, y + 40*scale, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
+		draw(right_label) at: {x + width - 20, y + 40*scale, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
 	}
 }
 
@@ -81,7 +82,7 @@ species param_indicator {
 
 species line_graph_aqi parent: line_graph {
 	list<float> thresholds;
-
+	int thick<-5;
 	action draw_zones {
 		// Calculate threshold lines' y-pos 
 		thresholds <- [];
@@ -110,8 +111,8 @@ species line_graph_aqi parent: line_graph {
 	aspect default {
 		do draw_zones;
 		// Draw axis
-		do draw_line a: origin b: {x, y, Z_LVL2} thickness: 5 col: palet[AQI_CHART];
-		do draw_line a: origin b: {x + width, y + height, Z_LVL2} thickness: 5 col: palet[AQI_CHART];
+		do draw_line a: origin b: {x, y, Z_LVL2} thickness: thick col: palet[AQI_CHART];
+		do draw_line a: origin b: {x + width, y + height, Z_LVL2} thickness: thick col: palet[AQI_CHART];
 		
 		point prev_val_pos <- origin;
 		loop i from: 0 to: length(val_list) - 1 {
@@ -122,7 +123,7 @@ species line_graph_aqi parent: line_graph {
 				// Graph the value
 				draw circle(10, val_pos) color: palet[AQI_CHART];		
 
-				do draw_line a: val_pos b: prev_val_pos thickness: 3 col: palet[AQI_CHART];	
+				do draw_line a: val_pos b: prev_val_pos thickness: thick col: palet[AQI_CHART];	
 				
 				prev_val_pos <- val_pos;
 			}
