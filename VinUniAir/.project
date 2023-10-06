@@ -32,6 +32,11 @@
 			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.9595,105.8874,21.0261,105.9985-4886769159093063852</locationURI>
 		</link>
 		<link>
+			<name>external/8.498092166088183,102.15851516856048,23.621865587779737,109.45079054218644-4886769159093063852</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+8.498092166088183,102.15851516856048,23.621865587779737,109.45079054218644-4886769159093063852</locationURI>
+		</link>
+		<link>
 			<name>external/map3571078917152953438</name>
 			<type>1</type>
 			<locationURI>CACHE_LOC/www.mapquestapi.com+_++_+staticmap+_+v5+_+map3571078917152953438</locationURI>

@@ -21,10 +21,10 @@ global {
 		write "Request : " + request;
 		static_map_request <- image_file(request, "JPEG");
 	}
-
-	string resources_dir <- "../includes/bigger_map/";
-	shape_file roads_shape_file <- shape_file(resources_dir + "hanoi_roads_.shp");
-	shape_file buildings_shape_file <- shape_file(resources_dir + "buildings.shp");
+ 
+//	shape_file roads_shape_file <- shape_file( "../includes/bigger_map/vnm_rdsl_2015_OSM.shp");
+	shape_file roads_shape_file <- shape_file( "../includes/bigger_map/hanoi_roads_.shp");
+	shape_file buildings_shape_file <- shape_file("../includes/bigger_map/buildings.shp");
 	geometry shape <- envelope(roads_shape_file);
 	//	list<pollutant_grid> active_cells;
 	init {
@@ -44,51 +44,66 @@ global {
 		geometry loc <- (world.shape CRS_transform ("EPSG:4326"));
 		map_center <- "" + loc.points[0].y + "," + loc.points[0].x + "," + loc.points[2].y + "," + loc.points[2].x;
 		write loc;
-//		map_center <- "105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104";
+		//		map_center <- "105.93916169971295,20.98776569973214,105.94918339971682,20.99437559973104";
 		write map_center;
 		//		do load_map;
-		
-
 		create road from: roads_shape_file {
 		}
+
 		do loadtraffic;
 		//
 		//		create building from: buildings_shape_file {
 		//		}
-		//save road to:"../includes/bigger_map/hanoi_roads_.shp" format:"shp" crs:"3857";
+		save road to:"../includes/bigger_map/_roads_.shp" format:"shp" crs:"3857";
 
 	}
-	reflex sss when:every(60#cycle){
+
+	reflex sss when: every(60 #cycle) {
 		do loadtraffic;
 	}
-	action loadtraffic{
-		ask traffic_incident{do die;}
+
+	action loadtraffic {
+		ask traffic_incident {
+			do die;
+		}
+
+		write "https://dev.virtualearth.net/REST/v1/Traffic/Incidents/" + map_center + "?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln";
 		json_file
-		sss <- json_file("https://dev.virtualearth.net/REST/v1/Traffic/Incidents/"+map_center+"?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln");
+		sss <- json_file("https://dev.virtualearth.net/REST/v1/Traffic/Incidents/" + map_center + "?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln");
 		map<string, unknown> c <- sss.contents;
 		list cells <- c["resourceSets"]["resources"];
 		loop mm over: cells {
 			loop mmm over: mm as list {
 				map<string, unknown> cc <- mmm;
-				if (cc["toPoint"] != nil) {
-					point pp <- cc["toPoint"]["coordinates"];
+				traffic_incident tt;
+				if (cc["point"] != nil) {
+					point pp <- cc["point"]["coordinates"];
 					create traffic_incident {
-					//					location<-(pp   CRS_transform("EPSG:32648")).location;
+						tt <- self;
+						//					location<-(pp   CRS_transform("EPSG:32648")).location;
 						location <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
 					}
 					//				write pp;
 				}
 
+				if (cc["toPoint"] != nil and tt != nil) {
+					point pp <- cc["toPoint"]["coordinates"];
+					point ppp <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+					tt.shape <- line([tt.location, ppp]);
+				}
+
 			}
 
 		}
+
 	}
+
 }
 
 species traffic_incident {
-
+	geometry shape<-circle(30);
 	aspect default {
-		draw circle(500) color: #red;
+		draw shape+10 color: #red;
 	}
 
 }
@@ -105,7 +120,7 @@ species road {
 }
 
 experiment exp {
-	float minimum_cycle_duration<-1.0;
+	float minimum_cycle_duration <- 1.0;
 	output {
 		display main type: 3d {
 			image ("../includes/bigger_map/hanoi.png");

@@ -338,7 +338,7 @@ species building schedules: [] {
 	}
 
 	aspect border {
-		draw shape border: #blue wireframe: true color: #blue;
+		draw shape+10 border: #cyan wireframe: true color: #cyan;
 	}
 
 	aspect default {

@@ -22,7 +22,7 @@ global {
 	string resources_dir <- "../includes/bigger_map/";
 	shape_file roads_shape_file <- shape_file(resources_dir + "hanoi_roads.shp");
 //	shape_file dummy_roads_shape_file <- shape_file(resources_dir + "vinuniroad.shp");
-	shape_file buildings_shape_file <- shape_file(resources_dir + "hanoi.shp");
+	shape_file buildings_shape_file <- shape_file(resources_dir + "hanoi2.shp");
 //	shape_file road_cells_shape_file <- shape_file(resources_dir + "road_cells.shp");
 //	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
 //	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
@@ -267,18 +267,18 @@ experiment exp {
 	parameter "Number of cars" var: n_cars <- 50 min: 0 max: 250*sizeCoeff;
 	parameter "Number of motorbikes" var: n_motorbikes <- 100 min: 0 max: 500*sizeCoeff; 
 	output {
-		display main type: opengl background: #white  axes:false{
+		display main type: opengl background: #black axes: false {
 //			camera 'default' location: {581.6792,1227.6974,388.9891} target: {568.1048,450.0203,0.0};	  		
 //	  		light #ambient intensity: 50;
 //			light #default type:#point intensity:hsb(0,0,1) location:{world.shape.width*0.5+ world.shape.width*1.5*sin(time*2),world.shape.width*0.5,world.shape.width*cos(time*2)} show:false dynamic:true;
 		
-			grid pollutant_grid elevation:pollution<0?0.0:pollution transparency: 0.5 triangulation:true;// position:{0,0,-0.0001} ;
+			grid pollutant_grid elevation:pollution<0?0.0:pollution transparency: 0.5 triangulation:true position:{0,0,-0.0001} ;
 			image ("../includes/bigger_map/hanoi.png");
 			//			mesh instant_heatmap scale: 0  transparency:0.5 color: palette([ #black, #black, #orange, #orange, #red, #red, #red]) smooth: 2 ;
 			species vehicle_random;
-			species road;
+			species road position:{0,0,0.0001} ;
 //			species natural;
-			species building aspect:border;
+			species building aspect:border position:{0,0,0.0002} ;
 //			species decoration_building;
 //			species dummy_road; 
 //			species progress_bar;
