@@ -34,7 +34,7 @@ species road schedules: [] skills: [road_skill] {
 	//			if (closed) {
 	//				draw shape + 50 color: palet[CLOSED_ROAD_TRAFFIC];
 	//			} else {
-		draw shape + 2 / (speed_coeff) color: (speed_coeff = 1.0) ? palet[NOT_CONGESTED_ROAD] : palet[CONGESTED_ROAD] /*end_arrow: 10*/;
+		draw shape + 2 / (speed_coeff) color: blend(#green,#red, speed_coeff/2)/*end_arrow: 10*/;
 		//			}
 		//
 		//		} else {
@@ -338,7 +338,7 @@ species building schedules: [] {
 	}
 
 	aspect border {
-		draw shape+10 border: #cyan wireframe: true color: #cyan;
+		draw shape border: #cyan wireframe: true color: #cyan;
 	}
 
 	aspect default {

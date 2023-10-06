@@ -107,6 +107,14 @@ global {
 		rgb(116,49,121,255)::20,
 		rgb(66,18,39,255)::30
 	];
+	map<rgb,float> zone_colors2 <- [
+		 #grey::0,  
+		 #yellow::0.1,   
+		#orange::0.2, 
+		#red::0.5, 
+		rgb(116,49,121,255)::0.7,
+		rgb(66,18,39,255)::0.9
+	];
 	map<int,string> thresholds_pollution <- [
 		0::THRESHOLD_GOOD,
 		51::THRESHOLD_MODERATE,

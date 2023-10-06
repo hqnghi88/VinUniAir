@@ -60,18 +60,7 @@ global {
 			depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 5 + 10;
 			texture <- textures[rnd(9)];
 		}
-
-		create progress_bar with: [x::1300, y::20, width::250, height::20, max_val::500, title::"Cars", left_label::"0", right_label::"Max"];
-		create progress_bar with: [x::1300, y::100, width::250, height::20, max_val::500, title::"Motorbikes", left_label::"0", right_label::"Max"];
-		create progress_bar with: [x::1300, y::180, width::500, height::20, max_val::1000, title::"Green Taxi", left_label::"0", right_label::"Max"];
-		//		create param_indicator with: [x::1300, y::850, size::22, name::"Road scenario", value::"No blocked roads", with_RT::true];
-		//		create param_indicator with: [x::1300, y::1050, size::22, name::"Display mode", value::"Traffic"];
-
-		//		create background with: [x::2450, y::1000, width::1250, height::1500, alpha::0.6];
-		//		create line_graph with: [x::2500, y::1400, width::1200, height::1000, label::"Hourly AQI"];
-		create line_graph_aqi with: [x::1300, y::250, width::500, height::200, label::"Hourly AQI"];
-		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
-		create param_indicator with: [x::1300, y::460, size::30, name:: "Time", value:: "00:00:00", with_box::true, width::500, height::20];
+ 
 	}
 
 	reflex update_time {
@@ -327,7 +316,7 @@ global {
 //		color<-palette([ #white, #white, #orange, #orange, #red, #red, #red])[int(min(pollution,MAX_P)*7/MAX_P)mod 7];
 //	} 
 //}
-experiment exp {
+experiment exp virtual:true {
 	parameter "Number of cars" var: n_cars <- 0 min: 0 max: 500;
 	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: 500;
 	parameter "Number of greentaxi" var: n_taxi <- 0 min: 0 max: 1000;
