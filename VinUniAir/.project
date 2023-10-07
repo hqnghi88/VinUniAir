@@ -17,29 +17,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>external/20.668646323981047,105.35077426261738,21.329047206048692,105.972608839716-4886769159093063852</name>
+			<name>external/20.926528929999986,105.7677002,21.121488569999993,106.02005768-4886769159093063852</name>
 			<type>1</type>
-			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.668646323981047,105.35077426261738,21.329047206048692,105.972608839716-4886769159093063852</locationURI>
-		</link>
-		<link>
-			<name>external/20.8620,105.7578,21.1284,106.2025-4886769159093063852</name>
-			<type>1</type>
-			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.8620,105.7578,21.1284,106.2025-4886769159093063852</locationURI>
-		</link>
-		<link>
-			<name>external/20.9595,105.8874,21.0261,105.9985-4886769159093063852</name>
-			<type>1</type>
-			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.9595,105.8874,21.0261,105.9985-4886769159093063852</locationURI>
-		</link>
-		<link>
-			<name>external/8.498092166088183,102.15851516856048,23.621865587779737,109.45079054218644-4886769159093063852</name>
-			<type>1</type>
-			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+8.498092166088183,102.15851516856048,23.621865587779737,109.45079054218644-4886769159093063852</locationURI>
-		</link>
-		<link>
-			<name>external/map3571078917152953438</name>
-			<type>1</type>
-			<locationURI>CACHE_LOC/www.mapquestapi.com+_++_+staticmap+_+v5+_+map3571078917152953438</locationURI>
+			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.926528929999986,105.7677002,21.121488569999993,106.02005768-4886769159093063852</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

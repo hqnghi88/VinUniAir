@@ -9,7 +9,8 @@ model main
 import "main2.gaml"
 
 global {
-	float step <- 10 #s;
+	float step <- 1 #s;
+	file icon <- file("../images/xanhsm.png");
 	shape_file roads_shape_file <- shape_file("../includes/bigger_map/hanoi_roads.shp");
 	//	shape_file dummy_roads_shape_file <- shape_file(resources_dir + "vinuniroad.shp");
 	shape_file buildings_shape_file <- shape_file("../includes/bigger_map/hanoi2.shp");
@@ -30,11 +31,83 @@ global {
 
 		//		create background with: [x::2450, y::1000, width::1250, height::1500, alpha::0.6];
 		//		create line_graph with: [x::2500, y::1400, width::1200, height::1000, label::"Hourly AQI"];
-		create line_graph_aqi with: [x::WW * 1300, y::250 * HH, width::500 * WW, height::200 * HH, label::"Hourly AQI", thick::50];
+		create line_graph_aqi with: [x::WW * 1300, y::250 * HH, width::500 * WW, height::150 * HH, label::"Hourly AQI", thick::50];
 		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
-		create param_indicator with: [x::WW * 1300, y::460 * HH, size::30, name:: "Time", value:: "00:00:00", with_box::true, width::500 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * 1300, y::460 * HH, size::30, name:: "Time", value:: "00:00:00", with_box::false, width::500 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * 1300, y::560 * HH, size::30, name:: "Traffic Incident updated", value:: "00:00:00", with_box::false, width::200 * WW, height::20 * HH];
+		end <- machine_time + 600000;
 	}
 
+	string map_center <- "48.8566140,2.3522219";
+
+	action loadtraffic {
+		geometry loc <- (world.shape CRS_transform ("EPSG:4326"));
+		map_center <- "" + loc.points[0].y + "," + loc.points[0].x + "," + loc.points[2].y + "," + loc.points[2].x;
+		ask traffic_incident {
+			do die;
+		}
+
+		//				write "https://dev.virtualearth.net/REST/v1/Traffic/Incidents/" + map_center + "?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln";
+		json_file
+		sss <- json_file("https://dev.virtualearth.net/REST/v1/Traffic/Incidents/" + map_center + "?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln");
+		map<string, unknown> c <- sss.contents;
+		list cells <- c["resourceSets"]["resources"];
+		loop mm over: cells {
+			loop mmm over: mm as list {
+				map<string, unknown> cc <- mmm;
+				traffic_incident tt;
+				if (cc["point"] != nil) {
+					point pp <- cc["point"]["coordinates"];
+					geometry pcc <- square(100) at_location (to_GAMA_CRS({pp.y, pp.x}, "4326").location);
+					//					write (building  overlapping pcc);
+					if (length(building overlapping pcc) > 0) {
+						create traffic_incident {
+							description <- cc["description"];
+							tt <- self;
+							//					location<-(pp   CRS_transform("EPSG:32648")).location;
+							location <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+						}
+
+					}
+
+					//				write pp;
+				}
+
+				if (cc["toPoint"] != nil and tt != nil) {
+					point pp <- cc["toPoint"]["coordinates"];
+					point ppp <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+					tt.shape <- line([tt.location, ppp]);
+				}
+
+			}
+
+		}
+
+		//		date curr <- date("now");
+		//		int h <- current_date.hour;
+		//		int m <- current_date.minute;
+		//		int s <- current_date.second;
+		//		string hh <- ((h < 10) ? "0" : "") + string(h);
+		//		string mm <- ((m < 10) ? "0" : "") + string(m);
+		//		string ss <- ((s < 10) ? "0" : "") + string(s);
+		//		string t <- hh + ":" + mm + ":" + ss;
+		ask (param_indicator where (each.name = "Traffic Incident updated")) {
+			do update("" + date("now"));
+		}
+
+	}
+
+	float start <- machine_time;
+	float end <- machine_time;
+
+	reflex sss {
+		if (end - start > 60000) {
+			do loadtraffic;
+			start <- machine_time;
+		}
+
+		end <- machine_time;
+	}
 	//	reflex produce_pollutant {
 	//		ask road { 
 	//			speed_coeff <- rnd(12);
@@ -45,36 +118,36 @@ global {
 }
 
 experiment exp1 {
-	parameter "Number of cars" var: n_cars <- 0 min: 0 max: 500;
-	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: 500;
-	parameter "Number of greentaxi" var: n_taxi <- 0 min: 0 max: 1000;
-	output synchronized: true {
+	parameter "Number of cars" var: n_cars <- 0 min: 0 max: 1000;
+	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: 1000;
+	parameter "Number of greentaxi" var: n_taxi <- 10 min: 0 max: 1000;
+	output synchronized: false {
 		display main type: opengl background: #black axes: false {
-		//			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};
-			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
+			camera 'default' location: {21992.7049, 13622.2196, 40112.1976} target: {21992.7049, 13621.5195, 0.0};
+			//			camera 'default' location: {38276.278, 20351.8877, 3978.7953} target: {38276.278, 20351.8183, 0.0};
+//			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
 
 			//			graphics toto {
 			//				draw static_map_request;
 			//			}
 			//			species vehicle;
-			species road position: {1300 * WW, 550 * HH, 0} size: {0.5, 0.5} {
+			species road position: {1300 * WW, 550 * HH, 0} size: {0.7, 0.7} {
 				draw shape color: #darkgray;
 			}
 
-			species taxi_random position: {1300 * WW, 550 * HH, 0} size: {0.5, 0.5} {
+			species taxi_random position: {1300 * WW, 550 * HH, 0} size: {0.7, 0.7} {
 				point pos <- compute_position();
-				draw circle(50) at: pos rotate: heading depth: 1 * sizeCoeff;
+				draw squircle(200, 6) texture: icon size: 500 at: pos rotate: 0 depth: 1 * sizeCoeff;
+				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			}
 			//			species natural;
 			species road position: {0, 0, 0.001};
 			species building aspect: border refresh: false position: {0, 0, 0.001};
 			species car_random aspect: base;
+			species dummy_car aspect: base;
 			species motorbike_random aspect: base;
-			species taxi_random position: {0, 0, 0.002} {
-			//				draw circle(10);
-				point pos <- compute_position();
-				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
-			}
+			species taxi_random aspect: base;
+			species traffic_incident position: {0, 0, 0.001};
 			//	species background;
 			species progress_bar;
 			species param_indicator;

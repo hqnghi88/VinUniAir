@@ -56,67 +56,32 @@ species road schedules: [] {
 
 }
 
-//species vehicle skills: [driving] {
-//	string type;
-//	point target;
-//	float time_to_go;
-//	bool recompute_path <- false;
-//	path my_path;
-//
-//	init {
-//		speed <- 3*sizeCoeff + rnd(10) #km / #h;
-////		location <- one_of(building).location;
-//		location <- any(road_network.vertices);
-//	}
-//
-//	reflex choose_new_target when: target = nil and time >= time_to_go {
-//		target <-any(road_network.vertices);// road_network.vertices closest_to any(building);
-//	}
-//
-//	reflex move when: target != nil {
-//		float start <- machine_time;
-//		do goto target: target on: road_network recompute_path: recompute_path;
-//		if location = target {
-//			target <- nil;
-//			time_to_go <- time; //+ rnd(15)#mn;
-//		}
-//
-//		if (recompute_path) {
-//			recompute_path <- false;
-//		}
-//
-//		float end <- machine_time;
-//		time_vehicles_move <- time_vehicles_move + (end - start);
-//	}
-//
-//	float pollution_from_speed {
-//		float returnedValue <- 1.0;		
-//		return (returnedValue);
-//	}
-//
-//	float get_pollution {
-//		return pollution_from_speed() *1;// coeff_vehicle[type];
-//	}
-//
-//	aspect default {
-//		switch type {
-//			match "car" {
-//				draw rectangle(10*sizeCoeff, 5*sizeCoeff) rotate: heading color: palet[CAR] depth: 5*sizeCoeff;
-//			}
-//
-//			match "motorbike" {
-//				draw rectangle(5*sizeCoeff, 2*sizeCoeff) rotate: heading color: palet[MOTOBYKE] depth: 7*sizeCoeff;
-//			}
-//
-//		}
-//
-//	}
-//
-//} 
+species traffic_incident {
+	geometry shape <- circle(30);
+	string description;
+
+	reflex flow when: flip(0.5) {
+//		list<road> tmp<-road at_distance 1;
+		create dummy_car {
+//			target_roads <- tmp;
+			targetP<-circle(100) at_location (myself.location);
+			location <- any_location_in(targetP);
+		}
+
+	}
+
+	aspect default {
+	//		draw description color: #pink at: location perspective: false font: font("SansSerif", 36, #bold);
+		draw triangle(500) color: #pink;
+	}
+
+}
+
 species base_vehicle skills: [moving] {
 	rgb color <- rnd_color(255);
 	graph road_graph;
 	string type;
+	bool should_die;
 	//Target point of the agent
 	point target;
 	//Probability of leaving the building
@@ -125,20 +90,37 @@ species base_vehicle skills: [moving] {
 	float speed <- rnd(10) #km / #h + 1;
 	// Random state
 	string state;
+//	list<road> target_roads;
+	geometry targetP;
 
 	init {
 		location <- any_location_in(one_of(road));
+		//		if (should_die) {
+		//			target_roads <- [road closest_to self];
+		//		location <- any_location_in(one_of(target_roads));
+		//		}
+
 	}
 	//Reflex to leave the building to another building
 	reflex leave when: (target = nil) and (flip(leaving_proba)) {
-		target <- any_location_in(one_of(road));
+		if (should_die) {
+			target <- any_location_in(targetP);
+		} else {
+			target <- any_location_in(one_of(road));
+		}
+
 	}
 	//Reflex to move to the target building moving on the road network
 	reflex move when: target != nil {
 	//we use the return_path facet to return the path followed
 		path path_followed <- goto(target: target, on: road_network, recompute_path: false, return_path: true, move_weights: road_weights);
-		if (location = target) {
-			target <- nil;
+		if (location distance_to target<10) {
+			if (should_die) {
+				do die;
+			} else {
+				target <- nil;
+			}
+
 		} }
 
 	float dist <- rnd(1) * 10 + 10.0 * rnd(3);
@@ -150,7 +132,10 @@ species base_vehicle skills: [moving] {
 	}
 
 	aspect base {
-		draw rectangle(1 * sizeCoeff, sizeCoeff) color: color rotate: heading depth: 1 * sizeCoeff border: #black;
+	//				draw circle(10);
+		point pos <- compute_position();
+		draw circle(20) at: pos rotate: heading depth: 1 * sizeCoeff;
+		//		draw rectangle(1 * sizeCoeff, sizeCoeff) color: color rotate: heading depth: 1 * sizeCoeff border: #black;
 	} }
 
 species vehicle_random parent: base_vehicle {
@@ -200,6 +185,24 @@ species car_random parent: vehicle_random {
 	init {
 	//		vehicle_length <- 6.8 #m;
 	//		num_lanes_occupied <- 2;
+		speed <- (20 + rnd(10)) #km / #h;
+		//		proba_block_node <- 0.0;
+		//		proba_respect_priorities <- 1.0;
+		//		proba_respect_stops <- [1.0];
+		//		proba_use_linked_road <- 0.0;
+		//		lane_change_limit <- 2;
+		//		linked_lane_limit <- 0;
+	}
+
+}
+
+species dummy_car parent: vehicle_random {
+	float aqh <- 20 + rnd(100.0);
+
+	init {
+		should_die <- true;
+		//		vehicle_length <- 6.8 #m;
+		//		num_lanes_occupied <- 2;
 		speed <- (20 + rnd(10)) #km / #h;
 		//		proba_block_node <- 0.0;
 		//		proba_respect_priorities <- 1.0;
@@ -265,83 +268,4 @@ species building schedules: [] {
 
 	}
 
-}
-
-//species decoration_building schedules: [] {
-//	float height;
-//
-//	aspect default {
-//		draw shape color: palet[DECO_BUILDING] border: #darkgrey depth: height * 10;
-//	}
-//
-//}
-
-//species natural schedules: [] {
-//
-//	aspect default {
-//		draw shape color: palet[NATURAL]; //border: #darkblue;
-//	}
-//
-//}
-
-//species dummy_road schedules: [] {
-//	int mid;
-//	int oneway;
-//	int linkToRoad;
-//	float density <- 5.0;
-//	road linked_road;
-//	int segments_number;
-//	int aspect_size <- 5;
-//	list<float> segments_x <- [];
-//	list<float> segments_y <- [];
-//	list<float> segments_length <- [];
-//	list<point> lane_position_shift <- [];
-//	int movement_time <- 5;
-//
-//	init {
-//	// Remove duplicate points
-//		int i <- 0;
-//		list<point> filtered_points <- shape.points;
-//		loop while: i < length(filtered_points) - 1 {
-//			if filtered_points[i] = filtered_points[i + 1] {
-//				remove from: filtered_points index: i;
-//			} else {
-//				i <- i + 1;
-//			}
-//
-//		}
-//
-//		shape <- polyline(filtered_points);
-//		segments_number <- length(shape.points) - 1;
-//		loop j from: 0 to: segments_number - 1 {
-//			if shape.points[j + 1] != shape.points[j] {
-//				add shape.points[j + 1].x - shape.points[j].x to: segments_x;
-//				add shape.points[j + 1].y - shape.points[j].y to: segments_y;
-//			}
-//
-//		}
-//
-//	}
-//
-//	aspect default {
-//		point new_point;
-//		int lights_number <- int(shape.perimeter / 50);
-//		draw shape color: palet[DUMMY_ROAD] /*end_arrow: 10*/;
-//
-//		//		loop i from: 0 to: segments_number-1 { 
-//		//			// Calculate rotation angle
-//		//			point u <- {segments_x[i] , segments_y[i]};
-//		//			point v <- {1, 0};
-//		//			float dot_prod <- u.x * v.x + u.y * v.y;
-//		//			float angle <- acos(dot_prod / (sqrt(u.x ^ 2 + u.y ^ 2) + sqrt(v.x ^ 2 + v.y ^ 2)));
-//		//			angle <- (u.x * -v.y + u.y * v.x > 0) ? angle : 360 - angle;
-//		//			
-//		//		 	loop j from:0 to: lights_number-1 {
-//		// 				new_point <- {shape.points[i].x + segments_x[i] * (j + mod(cycle, movement_time)/movement_time)/lights_number, 
-//		// 											shape.points[i].y + segments_y[i] * (j + mod(cycle, movement_time)/movement_time)/lights_number};
-//		//				draw rectangle(10, 4) at: new_point color: #yellow rotate: angle depth: 3;
-//		//			}
-//		//		}	
-//	}
-//
-//}
+} 

@@ -105,6 +105,7 @@ global {
 
 			} else {
 				create taxi_random number: delta with: [type:: "taxi"];
+				
 			}
 
 		}
@@ -263,7 +264,7 @@ global {
 	reflex update {
 //			instant_heatmap[] <- instant_heatmap[] * decrease_coeff;
 //			instant_heatmap[] <-0;
-		ask car_random + motorbike_random + taxi_random {
+		ask car_random + motorbike_random + taxi_random + dummy_car{
 			instant_heatmap[location] <- instant_heatmap[location] + self.aqh / 200;
 		}
 
