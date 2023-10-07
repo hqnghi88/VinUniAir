@@ -21,11 +21,11 @@ global {
 		write "Request : " + request;
 		static_map_request <- image_file(request, "JPEG");
 	}
- 
-//	shape_file roads_shape_file <- shape_file( "../includes/bigger_map/vnm_rdsl_2015_OSM.shp");
-	shape_file roads_shape_file <- shape_file( "../includes/bigger_map/hanoi_roads_.shp");
-	shape_file buildings_shape_file <- shape_file("../includes/bigger_map/buildings.shp");
-	geometry shape <- envelope(roads_shape_file);
+
+	//	shape_file roads_shape_file <- shape_file( "../includes/bigger_map/vnm_rdsl_2015_OSM.shp");
+	shape_file roads_shape_file <- shape_file("../includes/bigger_map/hanoi_roads_.shp");
+	shape_file buildings_shape_file <- shape_file("../includes/bigger_map/hanoi2.shp");
+	geometry shape <- envelope(buildings_shape_file);
 	//	list<pollutant_grid> active_cells;
 	init {
 
@@ -41,6 +41,10 @@ global {
 	//		l1<-(l1 CRS_transform("EPSG:4326")).location;
 	//		l2<-(l2 CRS_transform("EPSG:4326")).location;
 	//		map_center <-""+l1.y+","+l1.x+","+l2.y+","+l2.x;
+	//	https://air-quality-api.open-meteo.com/v1/air-quality?latitude=20.98776569973214&longitude=105.93916169971295&hourly=pm10,pm2_5
+	//20.926528929999986,105.7677002,21.121488569999993,106.02005768
+	//21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094
+	//	https://api.waqi.info/v2/map/bounds?token=3e88ec52a139b2da87ef8a5e2215c21ad16ea263&latlng=21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094
 		geometry loc <- (world.shape CRS_transform ("EPSG:4326"));
 		map_center <- "" + loc.points[0].y + "," + loc.points[0].x + "," + loc.points[2].y + "," + loc.points[2].x;
 		write loc;
@@ -50,16 +54,43 @@ global {
 		create road from: roads_shape_file {
 		}
 
-		do loadtraffic;
+		do loadAQ;
 		//
 		//		create building from: buildings_shape_file {
 		//		}
-		save road to:"../includes/bigger_map/_roads_.shp" format:"shp" crs:"3857";
-
+		save road to: "../includes/bigger_map/_roads_.shp" format: "shp" crs: "3857";
 	}
 
 	reflex sss when: every(60 #cycle) {
-		do loadtraffic;
+		do loadAQ;
+	}
+
+	action loadAQ {
+		ask traffic_incident {
+			do die;
+		}
+
+		//		write "https://api.waqi.info/v2/map/bounds?token=3e88ec52a139b2da87ef8a5e2215c21ad16ea263&latlng=21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094";
+		json_file
+		sss <- json_file("https://api.waqi.info/v2/map/bounds?token=3e88ec52a139b2da87ef8a5e2215c21ad16ea263&latlng=21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094");
+		map<string, unknown> c <- sss.contents;
+		list cells <- c["data"];
+		write cells;
+		loop cc over: cells {
+			traffic_incident tt;
+			if (cc["lat"] != nil) {
+				point pp <- {float(cc["lat"]), float(cc["lon"])};
+				create traffic_incident {
+					tt <- self;
+					aqi <- (cc["aqi"]);
+					//					location<-(pp   CRS_transform("EPSG:32648")).location;
+					location <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+				}
+				//				write pp;
+			}
+
+		}
+
 	}
 
 	action loadtraffic {
@@ -101,9 +132,12 @@ global {
 }
 
 species traffic_incident {
-	geometry shape<-circle(30);
+	geometry shape <- circle(100);
+	string aqi;
+
 	aspect default {
-		draw shape+10 color: #red;
+		draw shape + 10 color: #red;
+		draw "" + aqi at: location color: #pink;
 	}
 
 }

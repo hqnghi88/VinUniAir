@@ -115,8 +115,8 @@ global {
 	reflex update_car_population when: n_cars != n_cars_prev {
 		int delta_cars <- n_cars - n_cars_prev;
 		do update_vehicle_population("car", delta_cars);
-		ask first(progress_bar where (each.title = "Cars")) {
-			do update(float(n_cars));
+		ask first(param_indicator where (each.name = "Cars")) {
+			do update(""+(n_cars));
 		}
 
 		n_cars_prev <- n_cars;
@@ -125,8 +125,8 @@ global {
 	reflex update_motorbike_population when: n_motorbikes != n_motorbikes_prev {
 		int delta_motorbikes <- n_motorbikes - n_motorbikes_prev;
 		do update_vehicle_population("motorbike", delta_motorbikes);
-		ask first(progress_bar where (each.title = "Motorbikes")) {
-			do update(float(n_motorbikes));
+		ask first(param_indicator where (each.name = "Motorbikes")) {
+			do update(""+(n_motorbikes));
 		}
 
 		n_motorbikes_prev <- n_motorbikes;
@@ -135,8 +135,8 @@ global {
 	reflex update_taxi_population when: n_taxi != n_taxi_prev {
 		int delta_taxi <- n_taxi - n_taxi_prev;
 		do update_vehicle_population("taxi", delta_taxi);
-		ask first(progress_bar where (each.title = "Green Taxi")) {
-			do update(float(n_taxi));
+		ask first(param_indicator where (each.name = "Green Taxi")) {
+			do update(""+(n_taxi));
 		}
 
 		n_taxi_prev <- n_taxi;
@@ -177,19 +177,7 @@ global {
 	//		road_scenario_prev <- road_scenario;
 	//	}
 
-	//	reflex create_congestions {
-	//		float start <- machine_time;
-	//		ask open_roads {
-	//			list<vehicle> vehicles_on_road <- vehicle at_distance 1;
-	//			int n_cars_on_road <- vehicles_on_road count (each.type = "car");
-	//			int n_motorbikes_on_road <- vehicles_on_road count (each.type = "motorbike");
-	//			do update_speed_coeff(n_cars_on_road, n_motorbikes_on_road);
-	//		}
-	//
-	//		map<float, float> road_weights <- open_roads as_map (each::(each.shape.perimeter / each.speed_coeff));
-	//		road_network <- road_network with_weights road_weights;
-	//		time_create_congestions <- machine_time - start;
-	//	}
+
 	matrix<float> mat_diff <- matrix([[1 / 20, 1 / 20, 1 / 20], [1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], [1 / 20, 1 / 20, 1 / 20]]);
 	//
 	//	reflex produce_pollutant {

@@ -24,7 +24,7 @@ species road schedules: [] {
 	bool s2_closed;
 	bool closed;
 	float capacity <- 1 + shape.perimeter / 30;
-	float speed_coeff <- 1.0 min: 0.1;
+	float speed_coeff <- 3.0 + rnd(6.0) min: 0.1;
 
 	action update_speed_coeff (int n_cars_on_road, int n_motorbikes_on_road) {
 		speed_coeff <- (n_cars_on_road + n_motorbikes_on_road <= capacity) ? 1 : exp(-(n_motorbikes_on_road + 4 * n_cars_on_road) / capacity);
@@ -35,7 +35,7 @@ species road schedules: [] {
 	//			if (closed) {
 	//				draw shape + 50 color: palet[CLOSED_ROAD_TRAFFIC];
 	//			} else {
-		draw shape + 2 / (speed_coeff) color: brewer_colors("Reds")[int(13 - speed_coeff)] /*end_arrow: 10*/;
+		draw shape + (speed_coeff) color: brewer_colors("Reds")[int(13 - speed_coeff)] /*end_arrow: 10*/;
 		//			}
 		//
 		//		} else {
@@ -56,15 +56,27 @@ species road schedules: [] {
 
 }
 
+species AQI {
+	geometry shape <- circle(30);
+	string description;
+	float aqi;
+
+	aspect default {
+		draw "" + aqi color: #red+10 at: location perspective: false font: font("SansSerif", 48, #bold);
+		//		draw square(500) color: #cyan;
+	}
+
+}
+
 species traffic_incident {
 	geometry shape <- circle(30);
 	string description;
 
 	reflex flow when: flip(0.5) {
-//		list<road> tmp<-road at_distance 1;
+	//		list<road> tmp<-road at_distance 1;
 		create dummy_car {
-//			target_roads <- tmp;
-			targetP<-circle(100) at_location (myself.location);
+		//			target_roads <- tmp;
+			targetP <- circle(10) at_location (myself.location);
 			location <- any_location_in(targetP);
 		}
 
@@ -72,7 +84,7 @@ species traffic_incident {
 
 	aspect default {
 	//		draw description color: #pink at: location perspective: false font: font("SansSerif", 36, #bold);
-		draw triangle(500) color: #pink;
+		draw triangle(500) color: #red;
 	}
 
 }
@@ -90,7 +102,7 @@ species base_vehicle skills: [moving] {
 	float speed <- rnd(10) #km / #h + 1;
 	// Random state
 	string state;
-//	list<road> target_roads;
+	//	list<road> target_roads;
 	geometry targetP;
 
 	init {
@@ -114,7 +126,7 @@ species base_vehicle skills: [moving] {
 	reflex move when: target != nil {
 	//we use the return_path facet to return the path followed
 		path path_followed <- goto(target: target, on: road_network, recompute_path: false, return_path: true, move_weights: road_weights);
-		if (location distance_to target<10) {
+		if (location distance_to target < 10) {
 			if (should_die) {
 				do die;
 			} else {

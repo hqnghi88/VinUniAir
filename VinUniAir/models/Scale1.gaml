@@ -23,26 +23,64 @@ global {
 
 	init {
 		sizeCoeff <- 100;
-		create progress_bar with: [x::WW * 1300, y::20 * HH, width::250 * WW, height::20 * HH, max_val::500, title::"Cars", left_label::"0", right_label::"Max", scale::HH];
-		create progress_bar with: [x::WW * 1300, y::100 * HH, width::250 * WW, height::20 * HH, max_val::500, title::"Motorbikes", left_label::"0", right_label::"Max", scale::HH];
-		create progress_bar with: [x::WW * 1300, y::180 * HH, width::500 * WW, height::20 * HH, max_val::1000, title::"Green Taxi", left_label::"0", right_label::"Max", scale::HH];
+		//		create progress_bar with: [x::WW * 1300, y::20 * HH, width::250 * WW, height::20 * HH, max_val::500, title::"Cars", left_label::"0", right_label::"Max", scale::HH];
+		//		create progress_bar with: [x::WW * 1300, y::100 * HH, width::250 * WW, height::20 * HH, max_val::500, title::"Motorbikes", left_label::"0", right_label::"Max", scale::HH];
+		//		create progress_bar with: [x::WW * 1300, y::180 * HH, width::500 * WW, height::20 * HH, max_val::1000, title::"Green Taxi", left_label::"0", right_label::"Max", scale::HH];
+		create param_indicator with: [x::WW * 1300, y::20 * HH, size::30, name:: "Cars", value:: "0", with_box::false, width::200 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * 1300, y::50 * HH, size::30, name:: "Motorbikes", value:: "0", with_box::false, width::200 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * 1300, y::80 * HH, size::30, name:: "Green Taxi", value:: "0", with_box::false, width::200 * WW, height::20 * HH];
+
 		//		create param_indicator with: [x::1300, y::850, size::22, name::"Road scenario", value::"No blocked roads", with_RT::true];
 		//		create param_indicator with: [x::1300, y::1050, size::22, name::"Display mode", value::"Traffic"];
 
 		//		create background with: [x::2450, y::1000, width::1250, height::1500, alpha::0.6];
 		//		create line_graph with: [x::2500, y::1400, width::1200, height::1000, label::"Hourly AQI"];
-		create line_graph_aqi with: [x::WW * 1300, y::250 * HH, width::500 * WW, height::150 * HH, label::"Hourly AQI", thick::50];
+		create line_graph_aqi with: [x::WW * 1300, y::100 * HH, width::500 * WW, height::100 * HH, label::"Hourly AQI", thick::50];
 		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
-		create param_indicator with: [x::WW * 1300, y::460 * HH, size::30, name:: "Time", value:: "00:00:00", with_box::false, width::500 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * 1300, y::260 * HH, size::30, name:: "Time", value:: "00:00:00", with_box::false, width::500 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * 1300, y::560 * HH, size::30, name:: "Traffic Incident updated", value:: "00:00:00", with_box::false, width::200 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * 1300, y::900 * HH, size::30, name:: "AQI updated", value:: "00:00:00", with_box::false, width::200 * WW, height::20 * HH];
 		end <- machine_time + 600000;
 	}
 
 	string map_center <- "48.8566140,2.3522219";
 
+	action loadAQ {
+		ask AQI {
+			do die;
+		}
+
+		//		write "https://api.waqi.info/v2/map/bounds?token=3e88ec52a139b2da87ef8a5e2215c21ad16ea263&latlng=21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094";
+		json_file
+		sss <- json_file("https://api.waqi.info/v2/map/bounds?token=3e88ec52a139b2da87ef8a5e2215c21ad16ea263&latlng=21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094");
+		map<string, unknown> c <- sss.contents;
+		list cells <- c["data"];
+		//		write cells;
+		loop cc over: cells {
+			AQI tt;
+			if (cc["lat"] != nil) {
+				point pp <- {float(cc["lat"]), float(cc["lon"])};
+				create AQI {
+					tt <- self;
+					aqi <- float(cc["aqi"]);
+					//					location<-(pp   CRS_transform("EPSG:32648")).location;
+					location <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+				}
+				//				write pp;
+			}
+
+		}
+
+		ask (param_indicator where (each.name = "AQI updated")) {
+			do update("" + date("now"));
+		}
+
+	}
+
 	action loadtraffic {
 		geometry loc <- (world.shape CRS_transform ("EPSG:4326"));
 		map_center <- "" + loc.points[0].y + "," + loc.points[0].x + "," + loc.points[2].y + "," + loc.points[2].x;
+		//		write map_center;
 		ask traffic_incident {
 			do die;
 		}
@@ -103,6 +141,7 @@ global {
 	reflex sss {
 		if (end - start > 60000) {
 			do loadtraffic;
+			do loadAQ;
 			start <- machine_time;
 		}
 
@@ -123,31 +162,39 @@ experiment exp1 {
 	parameter "Number of greentaxi" var: n_taxi <- 10 min: 0 max: 1000;
 	output synchronized: false {
 		display main type: opengl background: #black axes: false {
-			camera 'default' location: {21992.7049, 13622.2196, 40112.1976} target: {21992.7049, 13621.5195, 0.0};
-			//			camera 'default' location: {38276.278, 20351.8877, 3978.7953} target: {38276.278, 20351.8183, 0.0};
-//			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
+			camera 'default' location: {20877.9254, 12949.7181, 32387.3272} target: {20877.9254, 12949.1529, 0.0};
+			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
 
 			//			graphics toto {
 			//				draw static_map_request;
 			//			}
 			//			species vehicle;
-			species road position: {1300 * WW, 550 * HH, 0} size: {0.7, 0.7} {
-				draw shape color: #darkgray;
+			species road position: {1300 * WW, 200 * HH, 0} size: {0.4, 0.4} {
+				draw shape color: #darkgray - 100;
 			}
 
-			species taxi_random position: {1300 * WW, 550 * HH, 0} size: {0.7, 0.7} {
-				point pos <- compute_position();
-				draw squircle(200, 6) texture: icon size: 500 at: pos rotate: 0 depth: 1 * sizeCoeff;
-				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
+			species traffic_incident position: {1300 * WW, 200 * HH, 0.01} size: {0.4, 0.4};
+			species road position: {1300 * WW, 550 * HH, 0} size: {0.4, 0.4} {
+				draw shape color: #darkgray - 100;
 			}
+
+			species AQI position: {1300 * WW, 550 * HH, 0.01} size: {0.4, 0.4};
+			//			species taxi_random position: {1300 * WW, 550 * HH, 0} size: {0.7, 0.7} {
+			//				point pos <- compute_position();
+			//				draw squircle(200, 6) texture: icon size: 500 at: pos rotate: 0 depth: 1 * sizeCoeff;
+			//				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
+			//			}
 			//			species natural;
 			species road position: {0, 0, 0.001};
 			species building aspect: border refresh: false position: {0, 0, 0.001};
 			species car_random aspect: base;
 			species dummy_car aspect: base;
 			species motorbike_random aspect: base;
-			species taxi_random aspect: base;
-			species traffic_incident position: {0, 0, 0.001};
+			species taxi_random {
+				point pos <- compute_position();
+				draw squircle(200, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
+				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
+			}
 			//	species background;
 			species progress_bar;
 			species param_indicator;
