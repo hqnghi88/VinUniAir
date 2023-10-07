@@ -162,7 +162,7 @@ experiment exp1 {
 	parameter "Number of greentaxi" var: n_taxi <- 10 min: 0 max: 1000;
 	output synchronized: false {
 		display main type: opengl background: #black axes: false {
-			camera 'default' location: {20877.9254, 12949.7181, 32387.3272} target: {20877.9254, 12949.1529, 0.0};
+			camera 'default' location: {22562.0664, 12690.6195, 32387.3272} target: {22562.0664, 12690.0543, 0.0};
 			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
 
 			//			graphics toto {
@@ -185,14 +185,14 @@ experiment exp1 {
 			//				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			//			}
 			//			species natural;
-			species road position: {0, 0, 0.001};
+			species road;
 			species building aspect: border refresh: false position: {0, 0, 0.001};
 			species car_random aspect: base;
 			species dummy_car aspect: base;
 			species motorbike_random aspect: base;
 			species taxi_random {
 				point pos <- compute_position();
-				draw squircle(200, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
+				draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
 				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			}
 			//	species background;
