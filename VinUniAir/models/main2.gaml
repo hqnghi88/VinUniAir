@@ -24,22 +24,23 @@ global {
 
 	//	list<pollutant_grid> active_cells;
 	init {
-		sizeCoeff <- 1; 
+		sizeCoeff <- 1;
+		if (simType = 0) {
+			create road from: roads_shape_file {
+			}
 
-		create road from: roads_shape_file { 
+			//Weights of the road
+			road_weights <- road as_map (each::each.shape.perimeter);
+			road_network <- as_edge_graph(road);
+
+			// Additional visualization
+			create building from: buildings_shape_file {
+				depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 5 + 10;
+				texture <- textures[rnd(9)];
+			}
 
 		}
 
-		//Weights of the road
-		road_weights <- road as_map (each::each.shape.perimeter);
-		road_network <- as_edge_graph(road);   
-
-		// Additional visualization
-		create building from: buildings_shape_file {
-			depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 5 + 10;
-			texture <- textures[rnd(9)];
-		}
- 
 	}
 
 	reflex update_time {
@@ -105,7 +106,6 @@ global {
 
 			} else {
 				create taxi_random number: delta with: [type:: "taxi"];
-				
 			}
 
 		}
@@ -116,7 +116,7 @@ global {
 		int delta_cars <- n_cars - n_cars_prev;
 		do update_vehicle_population("car", delta_cars);
 		ask first(param_indicator where (each.name = "Cars")) {
-			do update(""+(n_cars));
+			do update("" + (n_cars));
 		}
 
 		n_cars_prev <- n_cars;
@@ -126,7 +126,7 @@ global {
 		int delta_motorbikes <- n_motorbikes - n_motorbikes_prev;
 		do update_vehicle_population("motorbike", delta_motorbikes);
 		ask first(param_indicator where (each.name = "Motorbikes")) {
-			do update(""+(n_motorbikes));
+			do update("" + (n_motorbikes));
 		}
 
 		n_motorbikes_prev <- n_motorbikes;
@@ -136,7 +136,7 @@ global {
 		int delta_taxi <- n_taxi - n_taxi_prev;
 		do update_vehicle_population("taxi", delta_taxi);
 		ask first(param_indicator where (each.name = "Green Taxi")) {
-			do update(""+(n_taxi));
+			do update("" + (n_taxi));
 		}
 
 		n_taxi_prev <- n_taxi;
@@ -176,8 +176,6 @@ global {
 	//		road_network <- new_road_network;
 	//		road_scenario_prev <- road_scenario;
 	//	}
-
-
 	matrix<float> mat_diff <- matrix([[1 / 20, 1 / 20, 1 / 20], [1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], [1 / 20, 1 / 20, 1 / 20]]);
 	//
 	//	reflex produce_pollutant {
@@ -245,14 +243,14 @@ global {
 	field instant_heatmap <- field(size, size);
 
 	reflex diff {
-			diffuse "phero" on: instant_heatmap matrix: mat_diff;
-//		diffuse "trial" on: instant_heatmap;
+		diffuse "phero" on: instant_heatmap matrix: mat_diff;
+		//		diffuse "trial" on: instant_heatmap;
 	}
 
 	reflex update {
-//			instant_heatmap[] <- instant_heatmap[] * decrease_coeff;
-//			instant_heatmap[] <-0;
-		ask car_random + motorbike_random + taxi_random + dummy_car{
+	//			instant_heatmap[] <- instant_heatmap[] * decrease_coeff;
+	//			instant_heatmap[] <-0;
+		ask car_random + motorbike_random + taxi_random + dummy_car {
 			instant_heatmap[location] <- instant_heatmap[location] + self.aqh / 200;
 		}
 

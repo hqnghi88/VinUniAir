@@ -12,6 +12,7 @@ global {
 	list textures <- [file('../images/building_texture/texture1.jpg'),file('../images/building_texture/texture2.jpg'),file('../images/building_texture/texture3.jpg'),file('../images/building_texture/texture4.jpg'),file('../images/building_texture/texture5.jpg'),
 	file('../images/building_texture/texture6.jpg'),file('../images/building_texture/texture7.jpg'),file('../images/building_texture/texture8.jpg'),file('../images/building_texture/texture9.jpg'),file('../images/building_texture/texture10.jpg')];
 
+	int simType<-0;
 	int sizeCoeff<-10;
 	// Simulation parameters
 	int n_cars;

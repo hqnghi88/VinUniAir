@@ -40,11 +40,36 @@ global {
 		create param_indicator with: [x::WW * 1300, y::260 * HH, size::30, name:: "Time", value:: "00:00:00", with_box::false, width::500 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * 1300, y::560 * HH, size::30, name:: "Traffic Incident updated", value:: "00:00:00", with_box::false, width::200 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * 1300, y::900 * HH, size::30, name:: "AQI updated", value:: "00:00:00", with_box::false, width::200 * WW, height::20 * HH];
-		end <- machine_time + 600000;
+		create api_loader ;
+		ask api_loader{
+			
+		do run_thread interval:60#second;
+		}
+
 	}
 
 	string map_center <- "48.8566140,2.3522219";
 
+	//	reflex produce_pollutant {
+	//		ask road { 
+	//			speed_coeff <- rnd(12);
+	//		}
+	//
+	//	}
+
+}
+
+species api_loader skills:[thread]{
+	float start <- machine_time;
+	float end <- machine_time;
+
+	//counting down
+	action thread_action { 
+		
+			do loadtraffic;
+			do loadAQ;
+	}
+	
 	action loadAQ {
 		ask AQI {
 			do die;
@@ -135,35 +160,27 @@ global {
 
 	}
 
-	float start <- machine_time;
-	float end <- machine_time;
-
-	reflex sss {
-		if (end - start > 60000) {
-			do loadtraffic;
-			do loadAQ;
-			start <- machine_time;
-		}
-
-		end <- machine_time;
-	}
-	//	reflex produce_pollutant {
-	//		ask road { 
-	//			speed_coeff <- rnd(12);
-	//		}
-	//
-	//	}
+//	reflex sss {
+//		if (end - start > 600) {
+////			do loadtraffic;
+////			do loadAQ;
+//			loop times:100000000{}
+//			start <- machine_time;
+//		}
+//
+//		end <- machine_time;
+//	}
 
 }
 
-experiment exp1 {
+experiment exp1  autorun:true{ 
 	parameter "Number of cars" var: n_cars <- 0 min: 0 max: 1000;
 	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: 1000;
 	parameter "Number of greentaxi" var: n_taxi <- 10 min: 0 max: 1000;
 	output synchronized: false {
 		display main type: opengl background: #black axes: false {
 			camera 'default' location: {22562.0664, 12690.6195, 32387.3272} target: {22562.0664, 12690.0543, 0.0};
-			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
+//			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
 
 			//			graphics toto {
 			//				draw static_map_request;
@@ -192,7 +209,7 @@ experiment exp1 {
 			species motorbike_random aspect: base;
 			species taxi_random {
 				point pos <- compute_position();
-				draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
+				draw squircle(500, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
 				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			}
 			//	species background;
