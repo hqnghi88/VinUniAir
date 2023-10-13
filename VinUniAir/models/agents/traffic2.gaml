@@ -72,7 +72,7 @@ species traffic_incident  parallel:true{
 	geometry shape <- circle(30);
 	string description;
 
-	reflex flow when: flip(0.5) {
+	reflex flow when: flip(0.1) {
 	//		list<road> tmp<-road at_distance 1;
 		create dummy_car {
 		//			target_roads <- tmp;
