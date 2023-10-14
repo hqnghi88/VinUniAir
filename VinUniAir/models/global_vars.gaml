@@ -91,6 +91,7 @@ global {
 	string THRESHOLD_UNHEALTHY_SENSITIVE <- " Unhealthy for \nSensitive Groups";
 	string THRESHOLD_MODERATE <- " Moderate";
 	string THRESHOLD_GOOD <- " Good";
+		map<rgb, string> pollutions <- [#green::THRESHOLD_GOOD, #yellow::THRESHOLD_MODERATE, #red::THRESHOLD_UNHEALTHY, rgb(66,18,39,255)::THRESHOLD_HAZARDOUS];
 	
 	map<string,rgb> zone_colors <- [
 		THRESHOLD_GOOD:: #green, //rgb(104,225,66,255), 
@@ -101,7 +102,7 @@ global {
 		THRESHOLD_HAZARDOUS::rgb(66,18,39,255)
 	];
 	map<rgb,int> zone_colors1 <- [
-		 #darkgrey-100::0,  
+		 #green-100::0,  
 		 #yellow::5,   
 		#orange::10, 
 		#red::15, 
@@ -141,7 +142,15 @@ global {
 	string ROAD_POLLUTION_DISPLAY <- "road pollution";
 	string TEXT_COLOR <- "Text color";
 	string AQI_CHART <- "AQI Charts";
-	
+	string lb_Time<-"Date Time";
+	string lb_Traffic_Incident<-"Real-time Traffic Incident";
+	string lb_AQI_update<-"Real-time AQI";
+	string lb_cars<-"Cars";
+	string lb_motobike<-"Motorbikes";
+	string lb_taxi<-"Green Taxi";
+	string lb_rates_EG<-"Rate of Electrical vs Gas Vehicles";
+	string lb_gas_vehicle<-"Gas";
+	string lb_elec_vehicle<-"Elec";
 	map<string,rgb> palet <- [
 		BUILDING_BASE::#white,
 		BUILDING_OUTAREA::rgb(60,60,60),
@@ -159,7 +168,11 @@ global {
 		AQI_CHART::#black
 	];
 
-
+	list<rgb> pal <- palette([#black, #green, #yellow, #orange, #orange, #red, #red, #red]);
+	map<string, geometry> legends_geom1 <- ["Electrical Vehicle"::square(800),  "Gas Vehicle"::circle(400),  "Roads"::circle(400)]; 
+	map<rgb, string> legends <- [#cyan::"Electrical Vehicle", #yellow::"Gas Vehicle", rgb(#white)::"Roads"];
+	font text <- font("Arial", 14, #bold);
+	font title <- font("Arial", 18, #bold);
 	int get_pollution_threshold(float aqi) {
 		int threshold <- 0;
 		loop thr over: thresholds_pollution.keys {

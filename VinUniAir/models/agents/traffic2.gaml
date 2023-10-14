@@ -24,7 +24,7 @@ species road schedules: [] {
 	bool s2_closed;
 	bool closed;
 	float capacity <- 1 + shape.perimeter / 30;
-	float speed_coeff <- 3.0 + rnd(6.0) min: 0.1;
+	float speed_coeff <-12.0;// 3.0 + rnd(6.0) min: 0.1;
 
 	action update_speed_coeff (int n_cars_on_road, int n_motorbikes_on_road) {
 		speed_coeff <- (n_cars_on_road + n_motorbikes_on_road <= capacity) ? 1 : exp(-(n_motorbikes_on_road + 4 * n_cars_on_road) / capacity);
@@ -267,7 +267,7 @@ species building schedules: [] {
 	}
 
 	aspect border {
-		draw shape border: #cyan wireframe: true color: #cyan;
+		draw shape border: #orange wireframe: true color: #pink;
 	}
 
 	aspect default {
