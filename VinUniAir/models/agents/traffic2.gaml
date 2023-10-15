@@ -24,8 +24,7 @@ species road schedules: [] {
 	bool s2_closed;
 	bool closed;
 	float capacity <- 1 + shape.perimeter / 30;
-	float speed_coeff <-12.0;// 3.0 + rnd(6.0) min: 0.1;
-
+	float speed_coeff <- 12.0; // 3.0 + rnd(6.0) min: 0.1;
 	action update_speed_coeff (int n_cars_on_road, int n_motorbikes_on_road) {
 		speed_coeff <- (n_cars_on_road + n_motorbikes_on_road <= capacity) ? 1 : exp(-(n_motorbikes_on_road + 4 * n_cars_on_road) / capacity);
 	}
@@ -56,19 +55,23 @@ species road schedules: [] {
 
 }
 
-species AQI  parallel:true{
+species AQI {
 	geometry shape <- circle(30);
 	string description;
 	float aqi;
 
+	reflex pollute {
+		instant_heatmap[location] <- instant_heatmap[location] +  aqi / 20;
+	}
+
 	aspect default {
-		draw "" + aqi color: #red+10 at: location perspective: false font: font("SansSerif", 48, #bold);
+		draw "" + aqi color: #violet + 10 at: location font: font("SansSerif", 32, #bold);
 		//		draw square(500) color: #cyan;
 	}
 
 }
 
-species traffic_incident  parallel:true{
+species traffic_incident {
 	geometry shape <- circle(30);
 	string description;
 
@@ -89,7 +92,7 @@ species traffic_incident  parallel:true{
 
 }
 
-species base_vehicle skills: [moving]  parallel:true{
+species base_vehicle skills: [moving] {
 	rgb color <- rnd_color(255);
 	graph road_graph;
 	string type;
@@ -104,6 +107,7 @@ species base_vehicle skills: [moving]  parallel:true{
 	string state;
 	//	list<road> target_roads;
 	geometry targetP;
+	bool is_electrical <- false;
 
 	init {
 		location <- any_location_in(one_of(road));
@@ -150,7 +154,7 @@ species base_vehicle skills: [moving]  parallel:true{
 		//		draw rectangle(1 * sizeCoeff, sizeCoeff) color: color rotate: heading depth: 1 * sizeCoeff border: #black;
 	} }
 
-species vehicle_random parent: base_vehicle   parallel:true{
+species vehicle_random parent: base_vehicle {
 	float aqh <- 0.0;
 	bool recompute_path <- false;
 
@@ -174,7 +178,7 @@ species vehicle_random parent: base_vehicle   parallel:true{
 
 }
 
-species motorbike_random parent: vehicle_random   parallel:true{
+species motorbike_random parent: vehicle_random {
 	float aqh <- 15 + rnd(50.0);
 
 	init {
@@ -191,7 +195,7 @@ species motorbike_random parent: vehicle_random   parallel:true{
 
 }
 
-species car_random parent: vehicle_random   parallel:true{
+species car_random parent: vehicle_random {
 	float aqh <- 20 + rnd(100.0);
 
 	init {
@@ -208,7 +212,7 @@ species car_random parent: vehicle_random   parallel:true{
 
 }
 
-species dummy_car parent: vehicle_random   parallel:true{
+species dummy_car parent: vehicle_random {
 	float aqh <- 20 + rnd(100.0);
 
 	init {
@@ -226,7 +230,7 @@ species dummy_car parent: vehicle_random   parallel:true{
 
 }
 
-species taxi_random parent: vehicle_random   parallel:true{
+species bus_random parent: vehicle_random {
 	float aqh <- 5 + rnd(2.0);
 	rgb color <- brewer_colors("Greens")[int(13 - energy)];
 	float energy <- 1 + rnd(11.0);

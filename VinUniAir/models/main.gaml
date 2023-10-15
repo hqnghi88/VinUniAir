@@ -152,14 +152,14 @@ global {
 		n_motorbikes_prev <- n_motorbikes;
 	}
 
-	reflex update_taxi_population when: n_taxi != n_taxi_prev {
-		int delta_taxi <- n_taxi - n_taxi_prev;
+	reflex update_taxi_population when: n_bus != n_bus_prev {
+		int delta_taxi <- n_bus - n_bus_prev;
 		do update_vehicle_population("taxi", delta_taxi);
 		ask first(progress_bar where (each.title = "Green Taxi")) {
-			do update(float(n_taxi));
+			do update(float(n_bus));
 		}
 
-		n_taxi_prev <- n_taxi;
+		n_bus_prev <- n_bus;
 	}
 
 	//	reflex update_road_scenario when: road_scenario != road_scenario_prev {
@@ -319,7 +319,7 @@ global {
 experiment exp virtual:true {
 	parameter "Number of cars" var: n_cars <- 0 min: 0 max: 500;
 	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: 500;
-	parameter "Number of greentaxi" var: n_taxi <- 0 min: 0 max: 1000;
+	parameter "Number of greentaxi" var: n_bus <- 0 min: 0 max: 1000;
 	output synchronized: true {
 		display main type: opengl background: #black axes: false {
 		//			camera 'default' location: {581.6792, 1227.6974, 388.9891} target: {568.1048, 450.0203, 0.0};

@@ -45,12 +45,12 @@ species progress_bar schedules: [] {
 		if (bound = nil) {
 			bound <- rect(x + length_filled, y, length_unfilled, height, {(x + length_filled) + length_unfilled / 2, y + height / 2, Z_LVL2});
 		}
-
-		draw rect(x, y, length_filled, height, {x + length_filled / 2, y + height / 2, Z_LVL2}) color: #blue;
-		draw rect(x + length_filled, y, length_unfilled, height, {(x + length_filled) + length_unfilled / 2, y + height / 2, Z_LVL2}) color: #white;
+		draw rect(x, y, length_filled, height, {x + length_filled / 2, y + height / 2, Z_LVL2}) color: #cyan;
+		draw rect(x + length_filled, y, length_unfilled, height, {(x + length_filled) + length_unfilled / 2, y + height / 2, Z_LVL2}) color: #blue;
 		draw (title + ": ") at: {x, y - 10 * scale, Z_LVL2} font: font(size_title) color: palet[TEXT_COLOR];
 		draw (left_label) at: {x - 5, y + 40 * scale, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
 		draw (right_label) at: {x + width - 20, y + 40 * scale, Z_LVL2} font: font(size_labels) color: palet[TEXT_COLOR];
+		draw (""+int(val/max_val*100)+"%") at:{x+width/2,y+height/2+100,Z_LVL2}font: font(size_labels) color: #red;
 	}
 
 }

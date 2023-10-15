@@ -41,6 +41,9 @@ global {
 
 		}
 
+		create car_random number: max_cars with: [type:: "car"];
+		create motorbike_random number: max_motorbikes with: [type:: "motorbike"];
+		create bus_random number: max_bus with: [type:: "bus"];
 	}
 
 	reflex update_time {
@@ -69,43 +72,44 @@ global {
 
 	action update_vehicle_population (string type, int delta) {
 		if (type = "motorbike") {
-			list<motorbike_random> vehicles <- list(motorbike_random);
-			if (delta < 0) {
-				ask -delta among motorbike_random {
-					do die;
-				}
+			ask motorbike_random {
+				is_electrical <- false;
+			}
 
-			} else {
-			//				create motorbike_random number: delta;	
-				create motorbike_random number: delta with: [type:: "motorbike"];
+			ask n_motorbikes among motorbike_random {
+				is_electrical <- true;
 			}
 
 		}
 
 		if (type = "car") {
-		//				create car_random number: delta;			
-			list<car_random> vehicles <- list(car_random);
-			if (delta < 0) {
-				ask -delta among car_random {
-					do die;
-				}
-
-			} else {
-				create car_random number: delta with: [type:: "car"];
+			ask car_random {
+				is_electrical <- false;
 			}
+
+			ask n_cars among car_random {
+				is_electrical <- true;
+			}
+			//				create car_random number: delta;			
+			//			list<car_random> vehicles <- list(car_random);
+			//			if (delta < 0) {
+			//				ask -delta among car_random {
+			//					do die;
+			//				}
+			//
+			//			} else {
+			//				create car_random number: delta with: [type:: "car"];
+			//			}
 
 		}
 
-		if (type = "taxi") {
-		//				create car_random number: delta;			
-			list<taxi_random> vehicles <- list(taxi_random);
-			if (delta < 0) {
-				ask -delta among taxi_random {
-					do die;
-				}
+		if (type = "bus") {
+			ask bus_random {
+				is_electrical <- false;
+			}
 
-			} else {
-				create taxi_random number: delta with: [type:: "taxi"];
+			ask n_bus among bus_random {
+				is_electrical <- true;
 			}
 
 		}
@@ -113,45 +117,45 @@ global {
 	}
 
 	reflex update_car_population when: n_cars != n_cars_prev {
-		int delta_cars <- n_cars - n_cars_prev;
-		do update_vehicle_population("car", delta_cars);
+	//		int delta_cars <- n_cars - n_cars_prev;
+		do update_vehicle_population("car", n_cars);
 		ask first(progress_bar where (each.title = lb_cars)) {
 			do update(float(n_cars));
 		}
 
 		ask first(progress_bar where (each.title = lb_rates_EG)) {
-			do update(float(n_taxi / (n_taxi+n_cars + n_motorbikes)) * 100);
+			do update(float((n_bus + n_cars + n_motorbikes)));
 		}
 
 		n_cars_prev <- n_cars;
 	}
 
 	reflex update_motorbike_population when: n_motorbikes != n_motorbikes_prev {
-		int delta_motorbikes <- n_motorbikes - n_motorbikes_prev;
-		do update_vehicle_population("motorbike", delta_motorbikes);
+	//		int delta_motorbikes <- n_motorbikes - n_motorbikes_prev;
+		do update_vehicle_population("motorbike", n_motorbikes);
 		ask first(progress_bar where (each.title = lb_motobike)) {
 			do update(float(n_motorbikes));
 		}
 
 		ask first(progress_bar where (each.title = lb_rates_EG)) {
-			do update(float(n_taxi / (n_taxi+n_cars + n_motorbikes)) * 100);
+			do update(float((n_bus + n_cars + n_motorbikes)));
 		}
 
 		n_motorbikes_prev <- n_motorbikes;
 	}
 
-	reflex update_taxi_population when: n_taxi != n_taxi_prev {
-		int delta_taxi <- n_taxi - n_taxi_prev;
-		do update_vehicle_population("taxi", delta_taxi);
-		ask first(progress_bar where (each.title = lb_taxi)) {
-			do update(float(n_taxi));
+	reflex update_taxi_population when: n_bus != n_bus_prev {
+	//		int delta_taxi <- n_bus - n_taxi_prev;
+		do update_vehicle_population("bus", n_bus);
+		ask first(progress_bar where (each.title = lb_bus)) {
+			do update(float(n_bus));
 		}
 
 		ask first(progress_bar where (each.title = lb_rates_EG)) {
-			do update(float(n_taxi / (n_taxi+n_cars + n_motorbikes)) * 100);
+			do update(float((n_bus + n_cars + n_motorbikes)));
 		}
 
-		n_taxi_prev <- n_taxi;
+		n_bus_prev <- n_bus;
 	}
 
 	//	reflex update_road_scenario when: road_scenario != road_scenario_prev {
@@ -250,10 +254,6 @@ global {
 	//		time_absorb_pollutants <- 0.0;
 	//		time_diffuse_pollutants <- 0.0;
 	//	}
-	float decrease_coeff <- 0.99;
-	int size <- 300;
-	field instant_heatmap <- field(size, size);
-
 	reflex diff {
 		diffuse "phero" on: instant_heatmap matrix: mat_diff;
 		//		diffuse "trial" on: instant_heatmap;
@@ -262,8 +262,8 @@ global {
 	reflex update {
 	//			instant_heatmap[] <- instant_heatmap[] * decrease_coeff;
 	//			instant_heatmap[] <-0;
-		ask car_random + motorbike_random + taxi_random + dummy_car {
-			instant_heatmap[location] <- instant_heatmap[location] + self.aqh / 200;
+		ask car_random + motorbike_random + bus_random + dummy_car {
+			instant_heatmap[location] <- instant_heatmap[location] + (is_electrical ? 0.1 : 1.0) * self.aqh / 200;
 		}
 
 	}

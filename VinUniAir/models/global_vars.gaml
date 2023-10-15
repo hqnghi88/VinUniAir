@@ -14,16 +14,21 @@ global {
 
 	int simType<-0;
 	int sizeCoeff<-10;
+	
+	// Simulation parameters
+	int max_cars<-1000;
+	int max_motorbikes<-500;
+	int max_bus<-500;
 	// Simulation parameters
 	int n_cars;
 	int n_motorbikes;
-	int n_taxi;
+	int n_bus;
 	int road_scenario;
 	int display_mode<-1;
 	// Save params' old values to detect value changes
 	int n_cars_prev;
 	int n_motorbikes_prev;
-	int n_taxi_prev;
+	int n_bus_prev;
 	int road_scenario_prev;
 	int display_mode_prev;
 	
@@ -145,12 +150,11 @@ global {
 	string lb_Time<-"Date Time";
 	string lb_Traffic_Incident<-"Real-time Traffic Incident";
 	string lb_AQI_update<-"Real-time AQI";
-	string lb_cars<-"Cars";
-	string lb_motobike<-"Motorbikes";
-	string lb_taxi<-"Green Taxi";
-	string lb_rates_EG<-"Rate of Electrical vs Gas Vehicles";
-	string lb_gas_vehicle<-"Gas";
-	string lb_elec_vehicle<-"Elec";
+	string lb_cars<-"% Electrical Cars";
+	string lb_motobike<-"% Electrical Motorbikes";
+	string lb_bus<-"% Electrical Bus";
+	string lb_rates_EG<-"Total Rate of Electrical vs Gas";
+
 	map<string,rgb> palet <- [
 		BUILDING_BASE::#white,
 		BUILDING_OUTAREA::rgb(60,60,60),
@@ -168,11 +172,15 @@ global {
 		AQI_CHART::#black
 	];
 
+	float decrease_coeff <- 0.99;
+	int size <- 300;
+	field instant_heatmap <- field(size, size);
+
 	list<rgb> pal <- palette([#black, #green, #yellow, #orange, #orange, #red, #red, #red]);
 	map<string, geometry> legends_geom1 <- ["Electrical Vehicle"::square(800),  "Gas Vehicle"::circle(400),  "Roads"::circle(400)]; 
-	map<rgb, string> legends <- [#cyan::"Electrical Vehicle", #yellow::"Gas Vehicle", rgb(#white)::"Roads"];
-	font text <- font("Arial", 14, #bold);
-	font title <- font("Arial", 18, #bold);
+	map<rgb, string> legends <- [#cyan::"Electrical Vehicle", #blue::"Gas Vehicle", rgb(#white)::"Roads"];
+	font text <- font("Arial", 18, #bold);
+	font title <- font("Arial", 24, #bold);
 	int get_pollution_threshold(float aqi) {
 		int threshold <- 0;
 		loop thr over: thresholds_pollution.keys {
