@@ -21,7 +21,7 @@ global {
 	geometry shape <- envelope(roads_shape_file);
 	//	list<road> open_roads;
 	float traffic_light_interval <- 180 #s; //parameter: 'Traffic light interval' init: 60 #s;
-
+	int tttt <- 1;
 	//	list<pollutant_grid> active_cells;
 	init {
 		sizeCoeff <- 1;
@@ -41,9 +41,12 @@ global {
 
 		}
 
-		create car_random number: max_cars with: [type:: "car"];
-		create motorbike_random number: max_motorbikes with: [type:: "motorbike"];
-		create bus_random number: max_bus with: [type:: "bus"];
+		if (tttt = 1) {
+			create car_random number: max_cars with: [type:: "car"];
+			create motorbike_random number: max_motorbikes with: [type:: "motorbike"];
+			create bus_random number: max_bus with: [type:: "bus"];
+		}
+
 	}
 
 	reflex update_time {

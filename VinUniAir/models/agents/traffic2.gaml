@@ -61,7 +61,7 @@ species AQI {
 	float aqi;
 
 	reflex pollute {
-		instant_heatmap[location] <- instant_heatmap[location] +  aqi / 20;
+		instant_heatmap[location] <- instant_heatmap[location] +  aqi / 10;
 	}
 
 	aspect default {
@@ -75,7 +75,7 @@ species traffic_incident {
 	geometry shape <- circle(30);
 	string description;
 
-	reflex flow when: flip(0.1) {
+	reflex flow when: flip(0.5) {
 	//		list<road> tmp<-road at_distance 1;
 		create dummy_car {
 		//			target_roads <- tmp;
@@ -271,7 +271,7 @@ species building schedules: [] {
 	}
 
 	aspect border {
-		draw shape border: #orange wireframe: true color: #pink;
+		draw shape.contour+10 border: #gray color: #pink;
 	}
 
 	aspect default {

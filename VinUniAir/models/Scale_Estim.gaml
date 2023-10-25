@@ -21,6 +21,7 @@ global {
 	float xx_sc <- 1.0;
 	float xx <- -5000.0;
 	float yy <- 20000.0;
+	float lx<-900.0;
 	float WW <- world.shape.width / 1184.1165564209223;
 	float HH <- world.shape.height / 929.0766558628529;
 
@@ -42,9 +43,9 @@ global {
 		//		create line_graph with: [x::2500, y::1400, width::1200, height::1000, label::"Hourly AQI"];
 		create line_graph_aqi with: [x::WW * 200 * xx_sc + xx, y::40 * HH, width::300 * WW, height::110 * HH, label::"Hourly AQI", thick::50];
 		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
-		create param_indicator with: [x::WW * 1300 * xx_sc + xx, y::20 * HH, size::30, name:: lb_Time, value:: "" + date("now"), with_box::false, width::500 * WW, height::20 * HH];
-		create param_indicator with: [x::WW * 1300 * xx_sc + xx, y::200 * HH, size::30, name:: lb_Traffic_Incident, value:: "", with_box::false, width::200 * WW, height::20 * HH];
-		create param_indicator with: [x::WW * 1300 * xx_sc + xx, y::560 * HH, size::30, name:: lb_AQI_update, value:: "", with_box::false, width::200 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * lx * xx_sc + xx, y::20 * HH, size::30, name:: lb_Time, value:: "" + date("now"), with_box::false, width::500 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * lx * xx_sc + xx, y::60 * HH, size::30, name:: lb_Traffic_Incident, value:: "", with_box::false, width::200 * WW, height::20 * HH];
+		create param_indicator with: [x::WW * lx * xx_sc + xx, y::460 * HH, size::30, name:: lb_AQI_update, value:: "", with_box::false, width::200 * WW, height::20 * HH];
 		create api_loader;
 		ask api_loader {
 			do run_thread interval: 60 #second;
@@ -312,29 +313,26 @@ experiment estim autorun: true {
 
 			light #ambient intensity: 256;
 			camera 'default' location: {19640.4799, 13233.1794, 33812.0367} target: {19640.4799, 13232.5893, 0.0};
-//			image ("../includes/bigger_map/hanoi.png") position: {0, 0, -0.001};
 
 			//			graphics toto {
 			//				draw static_map_request;
 			//			}
 			//			species vehicle;
-//			image ("../includes/bigger_map/hanoi.png") position: {1300 * WW * xx_sc + xx, 20 * HH, -0.000001} size: {0.5, 0.5};
-			species road position: {1300 * WW * xx_sc + xx, 20 * HH, 0} size: {0.5, 0.5} {
-				draw shape color: #darkgray - 100;
-			}
+			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, -100 * HH, -0.01} size: {0.65, 0.65};
+			species building aspect: border refresh: false  position: {lx * WW * xx_sc + xx, -100 * HH, 0} size: {0.65, 0.65} ;
+			species traffic_incident position: {lx * WW * xx_sc + xx, -100 * HH, 0.01} size: {0.65, 0.65};
 
-			species traffic_incident position: {1300 * WW * xx_sc + xx, 20 * HH, 0.01} size: {0.5, 0.5};
 			
 			
-			species road position: {1300 * WW * xx_sc + xx, 550 * HH, 0} size: {0.5, 0.5} {
-				draw shape color: #darkgray - 100;
-			}
 
-//			image ("../includes/bigger_map/hanoi.png")  position: {1300 * WW * xx_sc + xx, 550 * HH, -0.00001} size: {0.5, 0.5};
-			species AQI position: {1300 * WW * xx_sc + xx, 550 * HH, 0.01} size: {0.5, 0.5};
+			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 400 * HH, -0.01} size: {0.65, 0.65};
+			species building aspect: border refresh: false  position: {lx * WW * xx_sc + xx, 400 * HH, 0} size: {0.65, 0.65};
+			species AQI position: {lx * WW * xx_sc + xx, 400 * HH, 0.01} size: {0.65, 0.65};
 			//			species road;
-			species building aspect: border refresh: false position: {0, 0, 0.001} size: {0.8, 0.8} ;			
-			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1 position: {0, 0, 0.001} size: {0.8, 0.8} ;
+			
+			image ("../includes/bigger_map/hanoi_dark.png") position: {-4000, 5200, -0.01} size: {0.75, 0.75} ;
+			species building aspect: border refresh: false  position: {-4000, 5200, -0.01} size: {0.75, 0.75} ;			
+			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1 position: {-2000, 3000, -0.01}   size: {0.75, 0.75};
 			
 			species line_graph_aqi position: {0, 0, -0.001};
 			species param_indicator;
