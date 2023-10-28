@@ -86,7 +86,8 @@ species param_indicator {
 
 species line_graph_aqi parent: line_graph {
 	list<float> thresholds;
-	int thick <- 5;
+	int thick_axe <- 5;
+	int thick_line <- 5;
 
 	action draw_zones {
 	// Calculate threshold lines' y-pos 
@@ -119,8 +120,8 @@ species line_graph_aqi parent: line_graph {
 	aspect default {
 		do draw_zones;
 		// Draw axis
-		do draw_line a: origin b: {x, y, Z_LVL2} thickness: thick col: palet[AQI_CHART];
-		do draw_line a: origin b: {x + width, y + height, Z_LVL2} thickness: thick col: palet[AQI_CHART];
+		do draw_line a: origin b: {x, y, Z_LVL2} thickness: thick_axe col: palet[AQI_CHART];
+		do draw_line a: origin b: {x + width, y + height, Z_LVL2} thickness: thick_axe col: palet[AQI_CHART];
 		point prev_val_pos <- origin;
 		loop i from: 0 to: length(val_list) - 1 {
 			if (val_list[i] >= 0) {
@@ -129,7 +130,7 @@ species line_graph_aqi parent: line_graph {
 				point val_pos <- {val_x_pos, val_y_pos, Z_LVL3};
 				// Graph the value
 				draw circle(10, val_pos) color: palet[AQI_CHART];
-				do draw_line a: val_pos b: prev_val_pos thickness: thick col: palet[AQI_CHART];
+				do draw_line a: val_pos b: prev_val_pos thickness: thick_line col: palet[AQI_CHART];
 				prev_val_pos <- val_pos;
 			}
 

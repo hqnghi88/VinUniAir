@@ -15,6 +15,7 @@ global {
 	int simType<-0;
 	int sizeCoeff<-10;
 	
+	string map_center <- "48.8566140,2.3522219";
 	// Simulation parameters
 	int max_cars<-1000;
 	int max_motorbikes<-500;
@@ -169,7 +170,7 @@ global {
 		CONGESTED_ROAD::#red,
 		ROAD_POLLUTION_DISPLAY:: #white,
 		TEXT_COLOR::#white,
-		AQI_CHART::#black
+		AQI_CHART::#white
 	];
 
 	float decrease_coeff <- 0.99;

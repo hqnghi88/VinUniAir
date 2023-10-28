@@ -55,13 +55,136 @@ species road schedules: [] {
 
 }
 
+
+species api_loader skills: [thread] {
+	float start <- machine_time;
+	float end <- machine_time;
+
+	//counting down
+	action thread_action {
+		try {
+			do loadtraffic;
+			do loadAQ;
+		}
+
+		catch {
+			write ".";
+		}
+
+	}
+
+	action loadAQ {
+		ask AQI {
+			do die;
+		}
+
+		//		write "https://api.waqi.info/v2/map/bounds?token=3e88ec52a139b2da87ef8a5e2215c21ad16ea263&latlng=21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094";
+		json_file
+		sss <- json_file("https://api.waqi.info/v2/map/bounds?token=3e88ec52a139b2da87ef8a5e2215c21ad16ea263&latlng=21.099234882428494,105.71216583251955,20.96464560107569,105.99266052246094");
+		map<string, unknown> c <- sss.contents;
+		list cells <- c["data"];
+		//		write cells;
+				float nn<-rnd(1)*1.0;
+		loop cc over: cells {
+//			AQI tt;
+			if (cc["lat"] != nil) {
+				point pp <- {float(cc["lat"]), float(cc["lon"])};
+				create AQI {
+					noise<-nn;
+//					tt <- self;
+					aqi <- float(cc["aqi"]);
+					//					location<-(pp   CRS_transform("EPSG:32648")).location;
+					location <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+				}
+				//				write pp;
+			}
+
+		}
+
+		//		ask (param_indicator where (each.name = lb_AQI_update)) {
+		//			do update("" + date("now"));
+		//		}
+
+	}
+
+	action loadtraffic {
+		geometry loc <- (world.shape CRS_transform ("EPSG:4326"));
+		map_center <- "" + loc.points[0].y + "," + loc.points[0].x + "," + loc.points[2].y + "," + loc.points[2].x;
+		//		write map_center;
+		ask traffic_incident {
+			do die;
+		}
+
+		//				write "https://dev.virtualearth.net/REST/v1/Traffic/Incidents/" + map_center + "?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln";
+		json_file
+		sss <- json_file("https://dev.virtualearth.net/REST/v1/Traffic/Incidents/" + map_center + "?includeJamcidents=true&key=AvZ5t7w-HChgI2LOFoy_UF4cf77ypi2ctGYxCgWOLGFwMGIGrsiDpCDCjliUliln");
+		map<string, unknown> c <- sss.contents;
+		list cells <- c["resourceSets"]["resources"];
+		loop mm over: cells {
+			loop mmm over: mm as list {
+				map<string, unknown> cc <- mmm;
+				traffic_incident tt;
+				if (cc["point"] != nil) {
+					point pp <- cc["point"]["coordinates"];
+					geometry pcc <- square(100) at_location (to_GAMA_CRS({pp.y, pp.x}, "4326").location);
+					//					write (building  overlapping pcc);
+					if (length(building overlapping pcc) > 0) {
+						create traffic_incident {
+							description <- cc["description"];
+							tt <- self;
+							//					location<-(pp   CRS_transform("EPSG:32648")).location;
+							location <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+						}
+
+					}
+
+					//				write pp;
+				}
+
+				if (cc["toPoint"] != nil and tt != nil) {
+					point pp <- cc["toPoint"]["coordinates"];
+					point ppp <- to_GAMA_CRS({pp.y, pp.x}, "4326").location;
+					tt.shape <- line([tt.location, ppp]);
+				}
+
+			}
+
+		}
+
+		//		date curr <- date("now");
+		//		int h <- current_date.hour;
+		//		int m <- current_date.minute;
+		//		int s <- current_date.second;
+		//		string hh <- ((h < 10) ? "0" : "") + string(h);
+		//		string mm <- ((m < 10) ? "0" : "") + string(m);
+		//		string ss <- ((s < 10) ? "0" : "") + string(s);
+		//		string t <- hh + ":" + mm + ":" + ss;
+		//		ask (param_indicator where (each.name = lb_Traffic_Incident)) {
+		//			do update("" + date("now"));
+		//		}
+
+	}
+
+	//	reflex sss {
+	//		if (end - start > 600) {
+	////			do loadtraffic;
+	////			do loadAQ;
+	//			loop times:100000000{}
+	//			start <- machine_time;
+	//		}
+	//
+	//		end <- machine_time;
+	//	}
+
+}
+
 species AQI {
 	geometry shape <- circle(30);
 	string description;
 	float aqi;
-
+	float noise<- 0.0;
 	reflex pollute {
-		instant_heatmap[location] <- instant_heatmap[location] +  aqi / 10;
+		instant_heatmap[location] <- instant_heatmap[location] +  aqi / (15+noise);
 	}
 
 	aspect default {
