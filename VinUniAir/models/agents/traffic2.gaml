@@ -385,6 +385,7 @@ species building schedules: [] {
 	file texture;
 	float depth;
 	agent p_cell;
+	int LVL;
 
 	init {
 		if height < min_height {
@@ -402,7 +403,7 @@ species building schedules: [] {
 	//			draw shape texture: [roof_texture.path, texture.path] depth: depth color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : palet[BUILDING_BASE] /*border: #darkgrey*/
 	//			/*depth: height * 10*/;
 	//		} else {
-		draw shape texture: [roof_texture.path, texture.path] color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : world.get_pollution_color(aqi) /*border: #darkgrey*/ depth: depth;
+		draw shape color: (type = type_outArea) ? palet[BUILDING_OUTAREA] : world.get_pollution_color(aqi) /* texture: [roof_texture.path, texture.path] border: #darkgrey*/ depth: depth;
 		//		}
 
 	}

@@ -42,6 +42,16 @@
 			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.951758955904882,105.76779239964061,21.1024078710244,106.00765144172993-4886769159093063852</locationURI>
 		</link>
 		<link>
+			<name>external/20.96321512016671,105.91327408869118,21.02269120743315,105.98088536500428-4886769159093063852</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.96321512016671,105.91327408869118,21.02269120743315,105.98088536500428-4886769159093063852</locationURI>
+		</link>
+		<link>
+			<name>external/20.979991300407534,105.93124039437359,21.005919824278035,105.96291905932189-4886769159093063852</name>
+			<type>1</type>
+			<locationURI>CACHE_LOC/dev.virtualearth.net+_++_+REST+_+v1+_+Traffic+_+Incidents+_+20.979991300407534,105.93124039437359,21.005919824278035,105.96291905932189-4886769159093063852</locationURI>
+		</link>
+		<link>
 			<name>external/bounds7393120692697211675</name>
 			<type>1</type>
 			<locationURI>CACHE_LOC/api.waqi.info+_++_+v2+_+map+_+bounds7393120692697211675</locationURI>
