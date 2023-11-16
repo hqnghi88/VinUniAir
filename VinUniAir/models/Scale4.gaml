@@ -42,7 +42,7 @@ global {
 		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
 		create param_indicator with:
 		[x::2200, y::60 * HH, size::30, name:: "Estimated pollution based on realtime traffic incident and AQ sensors", value:: "", with_box::false, width::500 * WW, height::10 * HH];
-		create line_graph_aqi with: [x::2200, y::70 * HH, width::300 * WW, height::110 * HH, label::"Hourly AQI", thick_axe::10, thick_line::50];
+		create line_graph_aqi with: [x::22, y::70 * HH, width::300 * WW, height::110 * HH, label::"Hourly AQI", thick_axe::10, thick_line::50];
 		create param_indicator with: [x::WW * lx * xx_sc + xx, y::60 * HH, size::30, name:: lb_Time, value:: "" + date("now"), with_box::false, width::500 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * lx * xx_sc + xx, y::120 * HH, size::30, name:: lb_Traffic_Incident, value:: "", with_box::false, width::200 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * lx * xx_sc + xx, y::600 * HH, size::30, name:: lb_AQI_update, value:: "", with_box::false, width::200 * WW, height::20 * HH];
@@ -96,6 +96,13 @@ experiment exp2 autorun: false {
 					y <- y + 40 #px;
 				}
 
+
+
+
+			
+			draw image ("../includes/vindark.png") at: {1800 #px,  60 #px} size: 1000;
+//			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 100 * HH, 0} size: {0.5, 0.5};
+//			species traffic_incident position: {lx * WW * xx_sc + xx, 100 * HH, 0.01} size: {0.5, 0.5};
 			}
 
 			//			light #ambient intensity: 256;
@@ -133,7 +140,7 @@ experiment exp2 autorun: false {
 
 			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
 //			species progress_bar position: {0, 0, 0.0001};
-//			species line_graph_aqi position: {0, 0, 0.01};
+			species line_graph_aqi position: {0, 0, 0.01};
 //			species param_indicator position: {0, 0, 0.01};
 			event #mouse_down {
 				if (#user_location overlaps first(progress_bar where (each.title = lb_cars)).bound) {
@@ -157,7 +164,7 @@ experiment exp2 autorun: false {
 
 			}
 
-		}
+		} 
 
 	}
 
