@@ -6,7 +6,7 @@
 ***/
 model main
 
-import "main2.gaml"
+import "main4.gaml"
 
 global {
 	float step <- 1 #s;
@@ -64,64 +64,64 @@ global {
 
 }
 
-//experiment exp2 autorun: true {
-//
-////	action _init_ {
-////		create simulation with: [map_scale_main::0.75];
-////	}
-//	parameter "Number of cars" var: n_cars <- 0 min: 0 max: max_cars;
-//	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: max_motorbikes;
-//	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
-//	output synchronized: false {
-//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-//		display main type: opengl background: #black axes: false {
-//			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
-//			//for each possible type, we draw a square with the corresponding color and we write the name of the type
-//			//				draw "Estimated pollution based on realtime traffic incident and AQ sensors" at: {0, 0} anchor: #top_left color: #white font: title;
-//				float y <- 50 #px;
-//				draw rectangle(40 #px, 160 #px) at: {20 #px, y + 60 #px} wireframe: true color: #white;
-//				loop p over: reverse(pollutions.pairs) {
-//					draw square(40 #px) at: {20 #px, y} color: rgb(p.key, 1.0);
-//					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
-//					y <- y + 40 #px;
-//				}
-//
-//				y <- y + 340 #px;
-//				draw "Icons" at: {0, y} anchor: #top_left color: #white font: title;
-//				y <- y + 40 #px;
-//				//				draw rectangle(40 #px, 120 #px) at: {20 #px, y + 40 #px} wireframe: true color: #white;
-//				loop p over: legends.pairs {
-//					draw legends_geom1[p.value] at: {20 #px, y} color: rgb(p.key, 0.8);
-//					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
-//					y <- y + 40 #px;
-//				}
-//
-//			}
-//
-//			//			light #ambient intensity: 256;
+experiment exp2 autorun: false {
+
+//	action _init_ {
+//		create simulation with: [map_scale_main::0.75];
+//	}
+	parameter "Number of cars" var: n_cars <- 50 min: 0 max: max_cars;
+	parameter "Number of motorbikes" var: n_motorbikes <- 50 min: 0 max: max_motorbikes;
+	parameter "Number of bus" var: n_bus <- 50 min: 0 max: max_bus;
+	output synchronized: false {
+		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+		display main type: opengl background: #black axes: false {
+			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
+			//for each possible type, we draw a square with the corresponding color and we write the name of the type
+			//				draw "Estimated pollution based on realtime traffic incident and AQ sensors" at: {0, 0} anchor: #top_left color: #white font: title;
+				float y <- 50 #px;
+				draw rectangle(40 #px, 160 #px) at: {20 #px, y + 60 #px} wireframe: true color: #white;
+				loop p over: reverse(pollutions.pairs) {
+					draw square(40 #px) at: {20 #px, y} color: rgb(p.key, 1.0);
+					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
+					y <- y + 40 #px;
+				}
+
+				y <- y + 340 #px;
+				draw "Icons" at: {0, y} anchor: #top_left color: #white font: title;
+				y <- y + 40 #px;
+				//				draw rectangle(40 #px, 120 #px) at: {20 #px, y + 40 #px} wireframe: true color: #white;
+				loop p over: legends.pairs {
+					draw legends_geom4[p.value] at: {20 #px, y} color: rgb(p.key, 0.8);
+					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
+					y <- y + 40 #px;
+				}
+
+			}
+
+			//			light #ambient intensity: 256;
 //			camera 'default' location: {23714.1541, 15022.4038, 37277.7705} target: {23714.1541, 15021.7533, 0.0}; //
-//			//
-//			//
-//			//
-//			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
+			//
+			//
+			//
+//			image ("../includes/vindark.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
 //			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 100 * HH, 0} size: {0.5, 0.5};
 //			species traffic_incident position: {lx * WW * xx_sc + xx, 100 * HH, 0.01} size: {0.5, 0.5};
-//			//
-//			//
-//			//
-//			//
-//			//
-//			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
-//			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 590 * HH, 0} size: {0.5, 0.5};
+			//
+			//
+			//
+			//
+			//
+//			image ("../includes/vindark.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
+//			species building  refresh: false position: {lx * WW * xx_sc + xx, 590 * HH, 0} size: {0.5, 0.5};
 //			species AQI position: {lx * WW * xx_sc + xx, 590 * HH, 0.01} size: {0.5, 0.5};
-//			//		
-//			//
-//			//
-//			//
-//			//
-//			image ("../includes/bigger_map/hanoi_dark.png") position: {0, 0, -0.0001};
-////			species road refresh: false;
-//			species building aspect: border refresh: false;
+			//		
+			//
+			//
+			//
+			//
+			image ("../includes/vindark.png") position: {0, 0, -0.0001};
+//			species road refresh: false;
+			species building  refresh: false;
 //			species car_random aspect: base;
 //			species dummy_car aspect: base;
 //			species motorbike_random aspect: base;
@@ -130,89 +130,90 @@ global {
 //				draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
 //				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 //			}
-//
-//			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
+
+			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
 //			species progress_bar position: {0, 0, 0.0001};
 //			species line_graph_aqi position: {0, 0, 0.01};
 //			species param_indicator position: {0, 0, 0.01};
-//			event #mouse_down {
-//				if (#user_location overlaps first(progress_bar where (each.title = lb_cars)).bound) {
-//					point p <- #user_location;
-//					geometry pp <- first(progress_bar where (each.title = lb_cars)).bound;
-//					n_cars <- int(max_cars * ((p.x - ((pp.location.x - pp.width / 2))) / (pp.width)));
-//					write n_cars;
-//				}
-//
-//				if (#user_location overlaps first(progress_bar where (each.title = lb_motobike)).bound) {
-//					point p <- #user_location;
-//					geometry pp <- first(progress_bar where (each.title = lb_motobike)).bound;
-//					n_motorbikes <- int(max_motorbikes * ((p.x - ((pp.location.x - pp.width / 2))) / (pp.width)));
-//				}
-//
-//				if (#user_location overlaps first(progress_bar where (each.title = lb_bus)).bound) {
-//					point p <- #user_location;
-//					geometry pp <- first(progress_bar where (each.title = lb_bus)).bound;
-//					n_bus <- int(max_bus * ((p.x - ((pp.location.x - pp.width / 2))) / (pp.width)));
-//				}
-//
-//			}
-//
-//		}
-//
-//	}
-//
-//}
+			event #mouse_down {
+				if (#user_location overlaps first(progress_bar where (each.title = lb_cars)).bound) {
+					point p <- #user_location;
+					geometry pp <- first(progress_bar where (each.title = lb_cars)).bound;
+					n_cars <- int(max_cars * ((p.x - ((pp.location.x - pp.width / 2))) / (pp.width)));
+					write n_cars;
+				}
 
-experiment estim autorun: false {
+				if (#user_location overlaps first(progress_bar where (each.title = lb_motobike)).bound) {
+					point p <- #user_location;
+					geometry pp <- first(progress_bar where (each.title = lb_motobike)).bound;
+					n_motorbikes <- int(max_motorbikes * ((p.x - ((pp.location.x - pp.width / 2))) / (pp.width)));
+				}
 
-	action _init_ {
-		create simulation with: [tttt::0];
-	}
+				if (#user_location overlaps first(progress_bar where (each.title = lb_bus)).bound) {
+					point p <- #user_location;
+					geometry pp <- first(progress_bar where (each.title = lb_bus)).bound;
+					n_bus <- int(max_bus * ((p.x - ((pp.location.x - pp.width / 2))) / (pp.width)));
+				}
 
-	output synchronized: false {
-		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-		display main type: 3d background: #black axes: false {
-//			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
-//			//for each possible type, we draw a square with the corresponding color and we write the name of the type
-//			//				draw "Estimated pollution based on realtime traffic incident and AQ sensors" at: {0, 0} anchor: #top_left color: #white font: title;
-//				float y <- 50 #px;
-//				draw rectangle(40 #px, 160 #px) at: {20 #px, y + 60 #px} wireframe: true color: #white;
-//				loop p over: reverse(pollutions.pairs) {
-//					draw square(40 #px) at: {20 #px, y} color: rgb(p.key, 1.0);
-//					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
-//					y <- y + 40 #px;
-//				}
-//
-//			}
-//
-//			//			light #ambient intensity: 256;
-////			camera 'default' location: {23714.1541, 15022.4038, 37277.7705} target: {23714.1541, 15021.7533, 0.0}; //
-//			//
-//			//
-//			//
-//			image ("../includes/vindark.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
-//			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 100 * HH, 0} size: {0.5, 0.5};
-//			species traffic_incident position: {lx * WW * xx_sc + xx, 100 * HH, 0.01} size: {0.5, 0.5};
-//			//
-//			//
-//			//
-//			//
-//			//
-//			image ("../includes/vindark.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
-//			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 590 * HH, 0} size: {0.5, 0.5};
-//			species AQI position: {lx * WW * xx_sc + xx, 590 * HH, 0.01} size: {0.5, 0.5};
-			//		
-			//
-			//
-			//
-			//
-			image ("../includes/vindark.png") position: {0, 0, -0.0001};
-			species building refresh: false;
-			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
-//			species line_graph_aqi position: {0, 0, 0.01};
-//			species param_indicator position: {0, 0, 0.01};
+			}
+
 		}
 
 	}
 
 }
+//
+//experiment estim autorun: false {
+//
+//	action _init_ {
+//		create simulation with: [tttt::0];
+//	}
+//
+//	output synchronized: false {
+//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+//		display main type: 3d background: #black axes: false {
+////			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
+////			//for each possible type, we draw a square with the corresponding color and we write the name of the type
+////			//				draw "Estimated pollution based on realtime traffic incident and AQ sensors" at: {0, 0} anchor: #top_left color: #white font: title;
+////				float y <- 50 #px;
+////				draw rectangle(40 #px, 160 #px) at: {20 #px, y + 60 #px} wireframe: true color: #white;
+////				loop p over: reverse(pollutions.pairs) {
+////					draw square(40 #px) at: {20 #px, y} color: rgb(p.key, 1.0);
+////					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
+////					y <- y + 40 #px;
+////				}
+////
+////			}
+////
+////			//			light #ambient intensity: 256;
+//////			camera 'default' location: {23714.1541, 15022.4038, 37277.7705} target: {23714.1541, 15021.7533, 0.0}; //
+////			//
+////			//
+////			//
+////			image ("../includes/vindark.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
+////			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 100 * HH, 0} size: {0.5, 0.5};
+////			species traffic_incident position: {lx * WW * xx_sc + xx, 100 * HH, 0.01} size: {0.5, 0.5};
+////			//
+////			//
+////			//
+////			//
+////			//
+////			image ("../includes/vindark.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
+////			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 590 * HH, 0} size: {0.5, 0.5};
+////			species AQI position: {lx * WW * xx_sc + xx, 590 * HH, 0.01} size: {0.5, 0.5};
+//			//		
+//			//
+//			//
+//			//
+//			//
+//			image ("../includes/vindark.png") position: {0, 0, -0.0001};
+//			species building refresh: false; 
+//			species motorbike_random aspect: base;
+//			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
+////			species line_graph_aqi position: {0, 0, 0.01};
+////			species param_indicator position: {0, 0, 0.01};
+//		}
+//
+//	}
+//
+//}

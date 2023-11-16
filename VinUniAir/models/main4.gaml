@@ -36,7 +36,7 @@ global {
 			// Additional visualization
 			create building from: buildings_shape_file with:[LVL::int(get("LVL"))]{
 //				depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 5 + 10;
-				depth<-float(LVL*100+rnd(5)+5);
+				depth<-float(LVL*(5+rnd(5))+rnd(2)*10+10);
 				texture <- textures[rnd(9)];
 			}
 
