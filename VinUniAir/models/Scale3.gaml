@@ -44,7 +44,7 @@ experiment exp3 parent: exp {
 	output synchronized: true {
 		display main type: opengl background: #black axes: false {
 			camera 'default' location: {927.7065, 536.4046, 1799.9519} target: {927.7065, 536.3731, 0.0};
-			image ("../includes/bigger_map/vin.png");
+//			image ("../includes/bigger_map/vin.png");
 
 			//			graphics toto {
 			//				draw static_map_request;
