@@ -392,12 +392,12 @@ species building schedules: [] {
 	agent p_cell;
 	int LVL;
 
-	init {
-		if height < min_height {
-			height <- mean_height + rnd(0.3, 0.3);
-		}
-
-	}
+//	init {
+//		if height < min_height {
+//			height <- mean_height + rnd(0.3, 0.3);
+//		}
+//
+//	}
 
 	aspect border {
 		draw shape.contour + 10 border: #gray color: #pink;

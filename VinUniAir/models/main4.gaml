@@ -34,12 +34,21 @@ global {
 			road_network <- as_edge_graph(road);
 
 			// Additional visualization
-			create building from: buildings_shape_file with:[LVL::int(get("LVL"))]{
-//				depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 5 + 10;
-				depth<-float(LVL*(5+rnd(5))+rnd(2)*10+10);
+			create building from: buildings_shape_file with: [LVL::int(get("LVL"))] {
+			//				depth <- (rnd(100) / 100) * (rnd(100) / 100) * (rnd(100) / 100 * 10) * 5 + 10;
+				depth <- float(LVL * (10+rnd(1)) + ((LVL = 0) ? (shape.area / 50) : 0) + 1);
 				texture <- textures[rnd(9)];
 			}
 
+//			create building returns: bbb {
+//				shape <- world.shape;
+//				depth <- 5.0;
+//			}
+			save world.shape to: "../includes/extend.shp" crs: "3857" format: "shp" ; 
+
+
+			save building to: "../includes/exportBuilding.shp" crs: "3857" format: "shp" attributes: ["ID"::int(self), "LVL"::depth]; 
+//			ask bbb{do die;}
 		}
 
 		if (tttt = 1) {
