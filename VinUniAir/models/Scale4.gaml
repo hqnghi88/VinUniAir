@@ -44,8 +44,8 @@ global {
 		//		create background with: [x::2450, y::1000, width::1250, height::1500, alpha::0.6];
 		//		create line_graph with: [x::2500, y::1400, width::1200, height::1000, label::"Hourly AQI"];
 		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
-		create param_indicator with: [x::22, y::ly + 60 * HH, size::30, name:: "Estimated realtime pollution", value:: "", with_box::false, width::500 * WW, height::10 * HH];
-		create line_graph_aqi with: [x::22, y::ly + 70 * HH, width::300 * WW, height::110 * HH, label::"Hourly AQI", thick_axe::1, thick_line::5];
+//		create param_indicator with: [x::22, y::ly + 60 * HH, size::30, name:: "Estimated realtime pollution", value:: "", with_box::false, width::500 * WW, height::10 * HH];
+		create line_graph_aqi with: [x::822, y::ly + 170 * HH, width::300 * WW, height::110 * HH, label::"Hourly AQI", thick_axe::1, thick_line::5];
 		create param_indicator with: [x::WW * lx + xx, y::ly + 70 * HH, size::30, name:: lb_Time, value:: "" + date("now"), with_box::false, width::500 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * lx + xx, y::ly + 110 * HH, size::30, name:: lb_Traffic_Incident, value:: "", with_box::false, width::200 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * lx + xx, y::ly + 500 * HH, size::30, name:: lb_AQI_update, value:: "", with_box::false, width::200 * WW, height::20 * HH];
@@ -98,7 +98,11 @@ experiment exp2 autorun: false {
 					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
 					y <- y + 40 #px;
 				}
-
+				
+				draw "Estimated realtime pollution" at: {220 #px, 10 #px}   color: #white  font: font(32);
+				ask line_graph_aqi{
+					do drawing;
+				}
 			}
 
 			//			light #ambient intensity: 256;
@@ -142,7 +146,7 @@ experiment exp2 autorun: false {
 			//
 			//
 			species progress_bar position: {0, 0, 0.0001};
-			species line_graph_aqi position: {0, 0, 0.01};
+//			species line_graph_aqi position: {0, 0, 0.01};
 			species param_indicator position: {0, 0, 0.01};
 			event #mouse_down {
 				if (#user_location overlaps first(progress_bar where (each.title = lb_cars)).bound) {

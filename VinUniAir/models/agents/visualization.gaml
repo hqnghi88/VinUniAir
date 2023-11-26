@@ -116,8 +116,8 @@ species line_graph_aqi parent: line_graph {
 	float calculate_val_y_pos (float value) {
 		return origin.y - (value / max_val * height);
 	}
-
-	aspect default {
+	action drawing{
+		
 		do draw_zones;
 		// Draw axis
 		do draw_line a: origin b: {x, y, Z_LVL2} thickness: thick_axe col: palet[AQI_CHART];
@@ -135,7 +135,10 @@ species line_graph_aqi parent: line_graph {
 			}
 
 		}
-
+		
+	}
+	aspect default {
+		do drawing;
 	}
 
 }
