@@ -24,7 +24,6 @@ global {
 	int tttt <- 1;
 	//	list<pollutant_grid> active_cells;
 	init {
-		sizeCoeff <- 1;
 		if (simType = 0) {
 			create road from: roads_shape_file {
 			}

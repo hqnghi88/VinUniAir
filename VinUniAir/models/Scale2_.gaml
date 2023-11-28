@@ -28,7 +28,7 @@ global {
 	float HH <- world.shape.height / 929.0766558628529;
 
 	init {
-		sizeCoeff <- 100;
+		sizeCoeff <- 0.5;
 		create progress_bar with:
 		[x::2200, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::(max_cars + max_bus + max_motorbikes), title::lb_rates_EG, left_label::"0%", right_label::"100%", scale::HH];
 		create progress_bar with: [x::2200, y::yy + 260 * HH, width::250 * WW, height::20 * HH, max_val::max_cars, title::lb_cars, left_label::"0%", right_label::"100%", scale::HH];
@@ -133,7 +133,7 @@ experiment exp2 autorun: true {
 			species motorbike_random aspect: base;
 			species bus_random {
 				point pos <- compute_position();
-				draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
+				draw squircle(50* sizeCoeff, 6* sizeCoeff) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
 				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			}
 

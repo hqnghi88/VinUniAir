@@ -13,7 +13,7 @@ global {
 	file('../images/building_texture/texture6.jpg'),file('../images/building_texture/texture7.jpg'),file('../images/building_texture/texture8.jpg'),file('../images/building_texture/texture9.jpg'),file('../images/building_texture/texture10.jpg')];
 
 	int simType<-0;
-	int sizeCoeff<-10;
+	float sizeCoeff <-10.0;
 	
 	string map_center <- "48.8566140,2.3522219";
 	// Simulation parameters
