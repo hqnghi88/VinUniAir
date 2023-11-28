@@ -8,7 +8,7 @@ model clean_road_network
 
 global {
 //Shapefile of the roads
-	file road_shapefile <- file("../includes/lvl2/hoankiem.shp");
+	file road_shapefile <- file("../includes/lvl2/gialam.shp");
 	//Shape of the environment
 	geometry shape <- envelope(road_shapefile);
 
@@ -38,7 +38,7 @@ global {
 //		}
 
 		create road from: road_shapefile;
-		save road to: "../includes/lvl2/hoankiem_b.shp" crs: "3857" format: "shp";
+		save road to: "../includes/lvl2/gialam_b.shp" crs: "3857" format: "shp";
 	}
 
 }
