@@ -169,61 +169,61 @@ experiment exp2 autorun: true {
 
 }
 
-experiment estim autorun: true {
-
-	action _init_ {
-		create simulation with: [tttt::0];
-	}
-
-	output synchronized: false {
-		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-		display main type: opengl background: #black axes: false {
-			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
-			//for each possible type, we draw a square with the corresponding color and we write the name of the type
-			//				draw "Estimated pollution based on realtime traffic incident and AQ sensors" at: {0, 0} anchor: #top_left color: #white font: title;
-				float y <- 50 #px;
-				draw rectangle(40 #px, 160 #px) at: {20 #px, y + 60 #px} wireframe: true color: #white;
-				loop p over: reverse(pollutions.pairs) {
-					draw square(40 #px) at: {20 #px, y} color: rgb(p.key, 1.0);
-					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
-					y <- y + 40 #px;
-				}
-
-				draw "Estimated realtime pollution" at: {220 #px, 10 #px} color: #white font: font(32);
-				ask line_graph_aqi {
-					do drawing;
-				}
-
-			}
-
-			//			light #ambient intensity: 256;
-			//			camera 'default' location: {23714.1541, 15022.4038, 37277.7705} target: {23714.1541, 15021.7533, 0.0}; //
-			//
-			//
-			//
-			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
-			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 100 * HH, 0} size: {0.5, 0.5};
-			species traffic_incident position: {lx * WW * xx_sc + xx, 100 * HH, 0.01} size: {0.5, 0.5};
-			//
-			//
-			//
-			//
-			//
-			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
-			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 590 * HH, 0} size: {0.5, 0.5};
-			species AQI position: {lx * WW * xx_sc + xx, 590 * HH, 0.01} size: {0.5, 0.5};
-			//		
-			//
-			//
-			//
-			//
-			image ("../includes/bigger_map/hanoi_dark.png") position: {0, 0, -0.0001};
-			species building aspect: border refresh: false;
-			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
-			//			species line_graph_aqi position: {0, 0, 0.01};
-			species param_indicator position: {0, 0, 0.01};
-		}
-
-	}
-
-}
+//experiment estim autorun: true {
+//
+//	action _init_ {
+//		create simulation with: [tttt::0];
+//	}
+//
+//	output synchronized: false {
+//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+//		display main type: opengl background: #black axes: false {
+//			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
+//			//for each possible type, we draw a square with the corresponding color and we write the name of the type
+//			//				draw "Estimated pollution based on realtime traffic incident and AQ sensors" at: {0, 0} anchor: #top_left color: #white font: title;
+//				float y <- 50 #px;
+//				draw rectangle(40 #px, 160 #px) at: {20 #px, y + 60 #px} wireframe: true color: #white;
+//				loop p over: reverse(pollutions.pairs) {
+//					draw square(40 #px) at: {20 #px, y} color: rgb(p.key, 1.0);
+//					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
+//					y <- y + 40 #px;
+//				}
+//
+//				draw "Estimated realtime pollution" at: {220 #px, 10 #px} color: #white font: font(32);
+//				ask line_graph_aqi {
+//					do drawing;
+//				}
+//
+//			}
+//
+//			//			light #ambient intensity: 256;
+//			//			camera 'default' location: {23714.1541, 15022.4038, 37277.7705} target: {23714.1541, 15021.7533, 0.0}; //
+//			//
+//			//
+//			//
+//			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
+//			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 100 * HH, 0} size: {0.5, 0.5};
+//			species traffic_incident position: {lx * WW * xx_sc + xx, 100 * HH, 0.01} size: {0.5, 0.5};
+//			//
+//			//
+//			//
+//			//
+//			//
+//			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
+//			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 590 * HH, 0} size: {0.5, 0.5};
+//			species AQI position: {lx * WW * xx_sc + xx, 590 * HH, 0.01} size: {0.5, 0.5};
+//			//		
+//			//
+//			//
+//			//
+//			//
+//			image ("../includes/bigger_map/hanoi_dark.png") position: {0, 0, -0.0001};
+//			species building aspect: border refresh: false;
+//			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
+//			//			species line_graph_aqi position: {0, 0, 0.01};
+//			species param_indicator position: {0, 0, 0.01};
+//		}
+//
+//	}
+//
+//}

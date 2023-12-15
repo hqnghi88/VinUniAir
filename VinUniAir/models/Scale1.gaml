@@ -28,7 +28,7 @@ global {
 	float HH <- world.shape.height / 929.0766558628529;
 
 	init {
-		sizeCoeff <- 100;
+		sizeCoeff <- 0.5;
 		create progress_bar with: [x::2200, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::(max_cars + max_bus + max_motorbikes), title::lb_rates_EG, left_label::"0%", right_label::"100%", scale::HH];
 		create progress_bar with: [x::2200, y::yy + 260	* HH,  width::250 * WW, height::20 * HH, max_val::max_cars, title::lb_cars, left_label::"0%", right_label::"100%", scale::HH];
 		create progress_bar with: [x::12200, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::max_motorbikes, title::lb_motobike, left_label::"0%", right_label::"100%", scale::HH];
