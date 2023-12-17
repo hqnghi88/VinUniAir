@@ -19,10 +19,10 @@ global {
 	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
 	geometry shape <- envelope(buildings_shape_file);
 	float xx_sc <- 1.0;
-	float xx <- 3800.0;
+	float xx <- 3300.0;
 	float yy <- 2000.0;
 	float lx <- 30.0;
-	float ly <- -530.0;
+	float ly <- -630.0;
 	float sub_scale <- 0.4;
 	//	float map_scale_main <- 0.75;
 	//	float map_main_y <- 5200.0;
@@ -44,8 +44,8 @@ global {
 		//		create background with: [x::2450, y::1000, width::1250, height::1500, alpha::0.6];
 		//		create line_graph with: [x::2500, y::1400, width::1200, height::1000, label::"Hourly AQI"];
 		//		create indicator_health_concern_level with: [x::2800, y::2803, width::800, height::200];
-//		create param_indicator with: [x::22, y::ly + 60 * HH, size::30, name:: "Estimated realtime pollution", value:: "", with_box::false, width::500 * WW, height::10 * HH];
-		create line_graph_aqi with: [x::822, y::ly + 170 * HH, width::300 * WW, height::110 * HH, label::"Hourly AQI", thick_axe::1, thick_line::5];
+		//		create param_indicator with: [x::22, y::ly + 60 * HH, size::30, name:: "Estimated realtime pollution", value:: "", with_box::false, width::500 * WW, height::10 * HH];
+		create line_graph_aqi with: [x::680, y::ly + 170 * HH, width::300 * WW, height::110 * HH, label::"Hourly AQI", thick_axe::1, thick_line::5];
 		create param_indicator with: [x::WW * lx + xx, y::ly + 70 * HH, size::30, name:: lb_Time, value:: "" + date("now"), with_box::false, width::500 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * lx + xx, y::ly + 110 * HH, size::30, name:: lb_Traffic_Incident, value:: "", with_box::false, width::200 * WW, height::20 * HH];
 		create param_indicator with: [x::WW * lx + xx, y::ly + 500 * HH, size::30, name:: lb_AQI_update, value:: "", with_box::false, width::200 * WW, height::20 * HH];
@@ -98,39 +98,40 @@ experiment exp2 autorun: false {
 					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
 					y <- y + 40 #px;
 				}
-				
-				draw "Estimated realtime pollution" at: {220 #px, 10 #px}   color: #white  font: font(32);
-				ask line_graph_aqi{
+
+				draw "Estimated realtime pollution" at: {220 #px, -20 #px} color: #white font: font(32);
+				ask line_graph_aqi {
 					do drawing;
 				}
+
 			}
 
 			//			light #ambient intensity: 256;
-			camera 'default' location: {2808.0566, 1356.8168, 4642.1988} target: {2808.0566, 1356.7358, 0.0};
+			camera 'default' location: {2213.9071, 1427.288, 4231.7434} target: {2213.9071, 1427.288, 0.0};
 			//
 			//
 			//
 			//
 			//
-			image ("../includes/vindark.png") position: {3900, 0, -0.01} size: {sub_scale, sub_scale};
-			species building refresh: false position: {3900, 0, 0} size: {sub_scale, sub_scale};
-			species traffic_incident position: {3900, 0, 0} size: {sub_scale, sub_scale};
+			image ("../includes/vindark.png") position: {3440, 0, -0.01} size: {sub_scale, sub_scale};
+			species building refresh: false position: {3440, 0, 0} size: {sub_scale, sub_scale};
+			species traffic_incident position: {3440, 0, 0} size: {sub_scale, sub_scale};
 			//
 			//
 			//
 			//
 			//
-			image ("../includes/vindark.png") position: {3900, 1500, -0.01} size: {sub_scale, sub_scale};
-			species building refresh: false position: {3900, 1500, 0} size: {sub_scale, sub_scale};
-			species AQI position: {3900, 1500, 0.01} size: {sub_scale, sub_scale};
+			image ("../includes/vindark.png") position: {3440, 1500, -0.01} size: {sub_scale, sub_scale};
+			species building refresh: false position: {3440, 1500, 0} size: {sub_scale, sub_scale};
+			species AQI position: {3440, 1500, 0.01} size: {sub_scale, sub_scale};
 			//		
 			//
 			//
 			//
 			//
-			image ("../includes/vindark.png") size:{0.9,0.9};
+			image ("../includes/vindark.png") size: {0.9, 0.9};
 			//			species road refresh: false;
-			species building refresh: false size:{0.9,0.9};
+			species building refresh: false size: {0.9, 0.9};
 			//			species car_random aspect: base;
 			//			species dummy_car aspect: base;
 			//			species motorbike_random aspect: base;
@@ -139,14 +140,14 @@ experiment exp2 autorun: false {
 			//				draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
 			//				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			//			}
-			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1 size:{0.9,0.9};
+			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1 size: {0.9, 0.9};
 			//		
 			//
 			//
 			//
 			//
 			species progress_bar position: {0, 0, 0.0001};
-//			species line_graph_aqi position: {0, 0, 0.01};
+			//			species line_graph_aqi position: {0, 0, 0.01};
 			species param_indicator position: {0, 0, 0.01};
 			event #mouse_down {
 				if (#user_location overlaps first(progress_bar where (each.title = lb_cars)).bound) {
