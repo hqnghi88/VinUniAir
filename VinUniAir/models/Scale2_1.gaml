@@ -132,6 +132,7 @@ experiment exp2 autorun: true {
 			species dummy_car aspect: base;
 			species motorbike_random aspect: base;
 			species bus_random {
+							dist<-5.0;
 				point pos <- compute_position();
 				draw squircle(50* sizeCoeff, 6* sizeCoeff) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
 				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;

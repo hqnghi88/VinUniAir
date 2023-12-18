@@ -120,7 +120,7 @@ experiment exp2 autorun: true {
 			//
 			//
 			image ("../includes/bigger_map/hanoi_dark.png") position: {0, 0, -0.0001};
-//			species road refresh: false;
+			species road refresh: false;
 			species building aspect: border refresh: false;
 			species car_random aspect: base;
 			species dummy_car aspect: base;

@@ -278,7 +278,7 @@ species base_vehicle skills: [moving] {
 	aspect base {
 	//				draw circle(10);
 		point pos <- compute_position();
-		draw circle(20* sizeCoeff) at: pos rotate: heading depth: 1 * sizeCoeff;
+		draw circle(20* sizeCoeff) color:#blue at: pos rotate: heading depth: 1 * sizeCoeff;
 		//		draw rectangle(1 * sizeCoeff, sizeCoeff) color: color rotate: heading depth: 1 * sizeCoeff border: #black;
 	} }
 
