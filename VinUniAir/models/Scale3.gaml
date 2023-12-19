@@ -74,8 +74,8 @@ experiment expProj autorun: true {
 	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
 	output synchronized: false {
 	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-		display "project" background:#black {
-
+		display "project" background:#black axes:false type:3d {
+camera 'default' location: {1533.1738,1295.5438,2528.0513} target: {1533.1738,1295.4997,0.0};
 		//			image ("../includes/ocplight.png") ;
 			image ("../includes/vindark.png");
 			species building refresh: false;
@@ -106,7 +106,7 @@ experiment exp2 autorun: false {
 	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
 	output synchronized: false {
 	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-		display "project" {
+		display "project" type:3d {
 
 					image ("../includes/ocplight.png") ;
 //			image ("../includes/vindark.png");
