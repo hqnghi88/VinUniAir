@@ -90,7 +90,7 @@ species api_loader skills: [thread] {
 				point pp <- {float(cc["lat"]), float(cc["lon"])};
 				geometry pcc <- square(100) at_location (to_GAMA_CRS({pp.y, pp.x}, "4326").location);
 				
-				if ((world.shape overlaps pcc)) {
+				if (length(building overlapping pcc)>0) {
 					create AQI {
 						noise <- nn;
 						//					tt <- self;
@@ -132,7 +132,7 @@ species api_loader skills: [thread] {
 					point pp <- cc["point"]["coordinates"];
 					geometry pcc <- square(100) at_location (to_GAMA_CRS({pp.y, pp.x}, "4326").location);
 					//					write (building  overlapping pcc);
-					if ((world.shape overlaps pcc)) {
+					if (length(building overlapping pcc)>0) {
 						create traffic_incident {
 							description <- cc["description"];
 							tt <- self;
@@ -215,7 +215,7 @@ species traffic_incident {
 
 	aspect default {
 	//		draw description color: #pink at: location perspective: false font: font("SansSerif", 36, #bold);
-		draw triangle(500) color: #red;
+		draw triangle(500*sizeCoeff) color: #red;
 	}
 
 }

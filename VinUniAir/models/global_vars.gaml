@@ -179,6 +179,7 @@ global {
 
 	list<rgb> pal <- palette([#black, #green, #yellow, #orange, #orange, #red, #red, #red]);
 	map<string, geometry> legends_geom1 <- ["Electrical Vehicle"::square(800),  "Gas Vehicle"::circle(400),  "Roads"::circle(400)]; 
+	map<string, geometry> legends_geom2 <- ["Electrical Vehicle"::square(160),  "Gas Vehicle"::circle(80),  "Roads"::circle(80)]; 
 	map<string, geometry> legends_geom4 <- ["Electrical Vehicle"::square(80),  "Gas Vehicle"::circle(40),  "Roads"::circle(40)]; 
 	map<rgb, string> legends <- [#cyan::"Electrical Vehicle", #blue::"Gas Vehicle", rgb(#white)::"Roads"];
 	font text <- font("Arial", 18, #bold);

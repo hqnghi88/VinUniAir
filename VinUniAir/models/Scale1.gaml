@@ -18,7 +18,7 @@ global {
 	//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
 	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
 	geometry shape <- envelope(buildings_shape_file) + 2000;
-	float xx_sc <- 1.0;
+ 	float xx_sc <- 1.0;
 	float xx <- -5000.0;
 	float yy <- 20000.0;
 	float lx <- 1350.0;
@@ -28,11 +28,13 @@ global {
 	float HH <- world.shape.height / 929.0766558628529;
 
 	init {
-		sizeCoeff <- 0.5;
-		create progress_bar with: [x::2200, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::(max_cars + max_bus + max_motorbikes), title::lb_rates_EG, left_label::"0%", right_label::"100%", scale::HH];
-		create progress_bar with: [x::2200, y::yy + 260	* HH,  width::250 * WW, height::20 * HH, max_val::max_cars, title::lb_cars, left_label::"0%", right_label::"100%", scale::HH];
-		create progress_bar with: [x::12200, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::max_motorbikes, title::lb_motobike, left_label::"0%", right_label::"100%", scale::HH];
-		create progress_bar with: [x::12200, y::yy + 260* HH, width::250 * WW, height::20 * HH, max_val::max_bus, title::lb_bus, left_label::"0%", right_label::"100%", scale::HH];
+		sizeCoeff <- 1.0;
+		create progress_bar with:
+		[x::2200, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::(max_cars + max_bus + max_motorbikes), title::lb_rates_EG, left_label::"0%", right_label::"100%", scale::HH];
+		create progress_bar with: [x::2200, y::yy + 260 * HH, width::250 * WW, height::20 * HH, max_val::max_cars, title::lb_cars, left_label::"0%", right_label::"100%", scale::HH];
+		create progress_bar with:
+		[x::12200, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::max_motorbikes, title::lb_motobike, left_label::"0%", right_label::"100%", scale::HH];
+		create progress_bar with: [x::12200, y::yy + 260 * HH, width::250 * WW, height::20 * HH, max_val::max_bus, title::lb_bus, left_label::"0%", right_label::"100%", scale::HH];
 		//		create param_indicator with: [x::WW * 1300 * xx_sc + xx, y::20 * HH, size::30, name:: "Cars", value:: "0", with_box::false, width::200 * WW, height::20 * HH];
 		//		create param_indicator with: [x::WW * 1300 * xx_sc + xx, y::50 * HH, size::30, name:: "Motorbikes", value:: "0", with_box::false, width::200 * WW, height::20 * HH];
 		//		create param_indicator with: [x::WW * 1300 * xx_sc + xx, y::80 * HH, size::30, name:: "Green Taxi", value:: "0", with_box::false, width::200 * WW, height::20 * HH];

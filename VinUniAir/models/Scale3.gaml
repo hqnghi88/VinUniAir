@@ -6,7 +6,7 @@
 ***/
 model main
 
-import "main4.gaml"
+import "main2.gaml"
 
 global {
 	float step <- 1 #s;
@@ -18,7 +18,7 @@ global {
 	//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
 	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
 	geometry shape <- envelope(buildings_shape_file);
-	float xx_sc <- 1.0;
+ 	float xx_sc <- 1.0;
 	float xx <- 3300.0;
 	float yy <- 2000.0;
 	float lx <- 30.0;
@@ -31,8 +31,7 @@ global {
 
 	init {
 	//		sizeCoeff <- 100;
-	
-		sizeCoeff <- 0.001;
+		sizeCoeff <- 0.2;
 		create progress_bar with:
 		[x::0, y::yy + 180 * HH, width::250 * WW, height::20 * HH, max_val::(max_cars + max_bus + max_motorbikes), title::lb_rates_EG, left_label::"0%", right_label::"100%", scale::HH];
 		create progress_bar with: [x::0, y::yy + 260 * HH, width::250 * WW, height::20 * HH, max_val::max_cars, title::lb_cars, left_label::"0%", right_label::"100%", scale::HH];
@@ -134,15 +133,16 @@ experiment exp2 autorun: false {
 			image ("../includes/vindark.png") size: {0.9, 0.9};
 			//			species road refresh: false;
 			species building refresh: false size: {0.9, 0.9};
-						species car_random aspect: base;
-						species dummy_car aspect: base;
-						species motorbike_random aspect: base;
-						species bus_random {
-							dist<-5.0;
-							point pos <- compute_position();
-							draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 0.5 * sizeCoeff;
-							//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
-						}
+			species car_random aspect: base;
+			species dummy_car aspect: base;
+			species motorbike_random aspect: base;
+			species bus_random {
+//				dist <- 1.0;
+//				point pos <- compute_position();
+				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon   rotate: 0 depth: 0.5 * sizeCoeff;
+				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
+			}
+
 			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1 size: {0.9, 0.9};
 			//		
 			//
