@@ -69,27 +69,27 @@ global {
 }
 
 experiment expProj autorun: true {
-	parameter "Number of cars" var: n_cars <- 0 min: 0 max: max_cars;
-	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: max_motorbikes;
-	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
-	output synchronized: false {
-	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-		display "project" background:#black axes:false type:3d {
-camera 'default' location: {1533.1738,1295.5438,2528.0513} target: {1533.1738,1295.4997,0.0};
-		//			image ("../includes/ocplight.png") ;
-			image ("../includes/vindark.png");
-			species building refresh: false;
-			species car_random aspect: base;
-			species dummy_car aspect: base;
-			species motorbike_random aspect: base;
-			species bus_random {
-			//				dist <- 1.0;
-			//				point pos <- compute_position();
-				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon rotate: 0 depth: 0.5 * sizeCoeff;
-				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
-			}
+	action _init_ {
+		create simulation with: [max_cars::500, max_motorbikes::250, max_bus::250];
+	}
 
-			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
+	parameter "% of Electrical cars" var: n_cars <- 0 min: 0 max: max_cars;
+	parameter "% of Electrical motorbikes" var: n_motorbikes <- 0 min: 0 max: max_motorbikes;
+	parameter "% of Electrical bus" var: n_bus <- 0 min: 0 max: max_bus;
+	output synchronized: true {
+	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+		display "project" background: #black axes: false type: 3d {
+			camera 'default' location: {1533.1738, 1295.5438, 2528.0513} target: {1533.1738, 1295.4997, 0.0};
+			//			image ("../includes/ocplight.png") ;
+			image ("../includes/vindark.png");	
+			species road refresh: false position: {0, 0, 0.005};
+			species building refresh: false;
+			species car_random aspect: base position: {0, 0, 0.05};
+			species dummy_car aspect: base position: {0, 0, 0.05};
+			species motorbike_random aspect: base position: {0, 0, 0.05};
+			species bus_random position: {0, 0, 0.05};
+
+			mesh instant_heatmap scale: 0 above: 0.5 triangulation: true position: {0, 0, 0.01} transparency: 0.2 color: scale(zone_colors1) smooth: 0;
 		}
 
 	}
@@ -98,31 +98,18 @@ camera 'default' location: {1533.1738,1295.5438,2528.0513} target: {1533.1738,12
 
 experiment exp2 autorun: false {
 
-//	action _init_ {
-//		create simulation with: [map_scale_main::0.75];
-//	}
+	action _init_ {
+		create simulation with: [max_cars::500, max_motorbikes::250, max_bus::250];
+	}
+
 	parameter "Number of cars" var: n_cars <- 0 min: 0 max: max_cars;
 	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: max_motorbikes;
 	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
 	output synchronized: false {
-	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-		display "project" type:3d {
-
-					image ("../includes/ocplight.png") ;
-//			image ("../includes/vindark.png");
-//			species building refresh: false;
-//			species car_random aspect: base;
-//			species dummy_car aspect: base;
-//			species motorbike_random aspect: base;
-//			species bus_random {
-//			//				dist <- 1.0;
-//			//				point pos <- compute_position();
-//				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon rotate: 0 depth: 0.5 * sizeCoeff;
-//				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
-//			}
-//
-//			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
-		}
+			layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+//		display "project" type: 3d {
+//			image ("../includes/ocplight.png");
+//		}
 
 		display main type: opengl background: #black axes: false {
 			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
@@ -176,9 +163,8 @@ experiment exp2 autorun: false {
 			//
 			//
 			//
-			image ("../includes/vindark.png") size: {0.9, 0.9};
 			//						species road refresh: false;
-			species building refresh: false size: {0.9, 0.9};
+			species building refresh: false;
 			species car_random aspect: base;
 			species dummy_car aspect: base;
 			species motorbike_random aspect: base;
@@ -189,7 +175,7 @@ experiment exp2 autorun: false {
 				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			}
 
-			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1 size: {0.9, 0.9};
+			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0 color: scale(zone_colors1) smooth: 1;
 			//		
 			//
 			//

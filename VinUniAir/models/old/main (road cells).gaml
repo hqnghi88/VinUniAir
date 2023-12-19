@@ -6,9 +6,9 @@
 ***/
 model main
 
-import "agents/traffic.gaml"
-import "agents/pollution.gaml"
-import "agents/visualization.gaml"
+import "traffic.gaml"
+import "../agents/pollution.gaml"
+import "../agents/visualization.gaml"
 
 global {
 	string appkey<-"uoJREhBjzEvVR9MYz3QXiAyYfmGWxOkG";

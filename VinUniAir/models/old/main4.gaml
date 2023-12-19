@@ -6,9 +6,9 @@
 ***/
 model main
 
-import "agents/traffic2.gaml"
-import "agents/pollution.gaml"
-import "agents/visualization.gaml"
+import "../agents/traffic2.gaml"
+import "../agents/pollution.gaml"
+import "../agents/visualization.gaml"
 
 global {
 

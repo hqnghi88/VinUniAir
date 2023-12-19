@@ -12,6 +12,7 @@ global {
 	float time_vehicles_move;
 	int nb_recompute_path;
 	float lane_width <- 1.7;
+	file icon <- file("../images/xanhsm.png");
 	file icon_fire <- file("../images/fire.jpg");
 	//Map containing all the weights for the road network graph
 	map<road, float> road_weights;
@@ -35,7 +36,7 @@ species road schedules: [] {
 	//			if (closed) {
 	//				draw shape + 50 color: palet[CLOSED_ROAD_TRAFFIC];
 	//			} else {
-		draw shape + (speed_coeff) color: brewer_colors("Reds")[int(13 - speed_coeff)] /*end_arrow: 10*/;
+		draw shape + (speed_coeff*sizeCoeff) color: brewer_colors("Reds")[int(13 - speed_coeff)] /*end_arrow: 10*/;
 		//			}
 		//
 		//		} else {
@@ -272,15 +273,15 @@ species base_vehicle skills: [moving] {
 	point compute_position {
 	// Shifts the position of the vehicle perpendicularly to the road,
 	// in order to visualize different lanes
-		point shift_pt <- {cos(heading + 90) * dist, sin(heading + 90) * dist};
+		point shift_pt <- {cos(heading + 90) * dist* sizeCoeff*0.5, sin(heading + 90) * dist* sizeCoeff*0.5};
 		return location + shift_pt;
 	}
 
 	aspect base {
 	//				draw circle(10);
-		point pos <- compute_position(); 
+//		point pos <- compute_position(); 
 //				point pos <- compute_position();
-				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon_fire   rotate: 0 depth: 0.5 * sizeCoeff;
+				draw squircle(50 * sizeCoeff, 6 * sizeCoeff)  texture:(is_electrical?icon: icon_fire)   rotate: 0 depth: 0.5 * sizeCoeff;
 //		draw circle(20* sizeCoeff) color:#blue at: pos rotate: heading depth: 1 * sizeCoeff;
 		//		draw rectangle(1 * sizeCoeff, sizeCoeff) color: color rotate: heading depth: 1 * sizeCoeff border: #black;
 	} }

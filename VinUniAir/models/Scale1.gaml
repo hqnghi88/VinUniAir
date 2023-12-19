@@ -10,7 +10,6 @@ import "main2.gaml"
 
 global {
 	float step <- 1 #s;
-	file icon <- file("../images/xanhsm.png");
 	shape_file roads_shape_file <- shape_file("../includes/bigger_map/oads_.shp");
 	//	shape_file dummy_roads_shape_file <- shape_file(resources_dir + "vinuniroad.shp");
 	shape_file buildings_shape_file <- shape_file("../includes/bigger_map/hanoi2.shp");
@@ -74,7 +73,7 @@ experiment exp2 autorun: true {
 	parameter "Number of cars" var: n_cars <- 0 min: 0 max: max_cars;
 	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: max_motorbikes;
 	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
-	output synchronized: false {
+	output synchronized: true {
 		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
 		display main type: opengl background: #black axes: false {
 			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
