@@ -18,7 +18,7 @@ global {
 	//	shape_file naturals_shape_file <- shape_file(resources_dir + "naturals.shp");
 	//	shape_file buildings_admin_shape_file <- shape_file(resources_dir + "buildings_admin.shp");
 	geometry shape <- envelope(buildings_shape_file);
- 	float xx_sc <- 1.0;
+	float xx_sc <- 1.0;
 	float xx <- 3300.0;
 	float yy <- 2000.0;
 	float lx <- 30.0;
@@ -68,6 +68,34 @@ global {
 
 }
 
+experiment expProj autorun: true {
+	parameter "Number of cars" var: n_cars <- 0 min: 0 max: max_cars;
+	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: max_motorbikes;
+	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
+	output synchronized: false {
+	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+		display "project" background:#black {
+
+		//			image ("../includes/ocplight.png") ;
+			image ("../includes/vindark.png");
+			species building refresh: false;
+			species car_random aspect: base;
+			species dummy_car aspect: base;
+			species motorbike_random aspect: base;
+			species bus_random {
+			//				dist <- 1.0;
+			//				point pos <- compute_position();
+				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon rotate: 0 depth: 0.5 * sizeCoeff;
+				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
+			}
+
+			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
+		}
+
+	}
+
+}
+
 experiment exp2 autorun: false {
 
 //	action _init_ {
@@ -77,7 +105,25 @@ experiment exp2 autorun: false {
 	parameter "Number of motorbikes" var: n_motorbikes <- 0 min: 0 max: max_motorbikes;
 	parameter "Number of bus" var: n_bus <- 0 min: 0 max: max_bus;
 	output synchronized: false {
-		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
+		display "project" {
+
+					image ("../includes/ocplight.png") ;
+//			image ("../includes/vindark.png");
+//			species building refresh: false;
+//			species car_random aspect: base;
+//			species dummy_car aspect: base;
+//			species motorbike_random aspect: base;
+//			species bus_random {
+//			//				dist <- 1.0;
+//			//				point pos <- compute_position();
+//				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon rotate: 0 depth: 0.5 * sizeCoeff;
+//				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
+//			}
+//
+//			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
+		}
+
 		display main type: opengl background: #black axes: false {
 			overlay position: {50 #px, 50 #px} size: {1 #px, 1 #px} background: #black border: #black rounded: false {
 			//for each possible type, we draw a square with the corresponding color and we write the name of the type
@@ -131,15 +177,15 @@ experiment exp2 autorun: false {
 			//
 			//
 			image ("../includes/vindark.png") size: {0.9, 0.9};
-			//			species road refresh: false;
+			//						species road refresh: false;
 			species building refresh: false size: {0.9, 0.9};
 			species car_random aspect: base;
 			species dummy_car aspect: base;
 			species motorbike_random aspect: base;
 			species bus_random {
-//				dist <- 1.0;
-//				point pos <- compute_position();
-				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon   rotate: 0 depth: 0.5 * sizeCoeff;
+			//				dist <- 1.0;
+			//				point pos <- compute_position();
+				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon rotate: 0 depth: 0.5 * sizeCoeff;
 				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			}
 

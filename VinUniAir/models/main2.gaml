@@ -194,7 +194,12 @@ global {
 	//		road_network <- new_road_network;
 	//		road_scenario_prev <- road_scenario;
 	//	}
-	matrix<float> mat_diff <- matrix([[1 / 20, 1 / 20, 1 / 20], [1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], [1 / 20, 1 / 20, 1 / 20]]);
+	matrix<float> mat_diff <- matrix(
+		[
+			[1 / 20, 1 / 20, 1 / 20], 
+			[1 / 20, 3 / 5 * pollutant_decay_rate, 1 / 20], 
+			[1 / 20, 1 / 20, 1 / 20]
+	]);
 	//
 	//	reflex produce_pollutant {
 	//	// Absorb pollutants emitted by vehicles

@@ -12,6 +12,7 @@ global {
 	float time_vehicles_move;
 	int nb_recompute_path;
 	float lane_width <- 1.7;
+	file icon_fire <- file("../images/fire.jpg");
 	//Map containing all the weights for the road network graph
 	map<road, float> road_weights;
 }
@@ -277,8 +278,10 @@ species base_vehicle skills: [moving] {
 
 	aspect base {
 	//				draw circle(10);
-		point pos <- compute_position();
-		draw circle(20* sizeCoeff) color:#blue at: pos rotate: heading depth: 1 * sizeCoeff;
+		point pos <- compute_position(); 
+//				point pos <- compute_position();
+				draw squircle(50 * sizeCoeff, 6 * sizeCoeff) texture: icon_fire   rotate: 0 depth: 0.5 * sizeCoeff;
+//		draw circle(20* sizeCoeff) color:#blue at: pos rotate: heading depth: 1 * sizeCoeff;
 		//		draw rectangle(1 * sizeCoeff, sizeCoeff) color: color rotate: heading depth: 1 * sizeCoeff border: #black;
 	} }
 
