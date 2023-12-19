@@ -111,7 +111,7 @@ experiment exp2 autorun: true {
 			camera 'default' location: {4974.2521, 3802.0654, 9124.9639} target: {4974.2521, 3801.9062, 0.0}; //
 			//
 			//
-			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
+			image ("../includes/lvl2/hoankiem.png") position: {lx * WW * xx_sc + xx, 100 * HH, -0.01} size: {0.5, 0.5};
 			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 100 * HH, 0} size: {0.5, 0.5};
 			species traffic_incident position: {lx * WW * xx_sc + xx, 100 * HH, 0.01} size: {0.5, 0.5};
 			//
@@ -119,7 +119,7 @@ experiment exp2 autorun: true {
 			//
 			//
 			//
-			image ("../includes/bigger_map/hanoi_dark.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
+			image ("../includes/lvl2/hoankiem.png") position: {lx * WW * xx_sc + xx, 590 * HH, -0.01} size: {0.5, 0.5};
 			species building aspect: border refresh: false position: {lx * WW * xx_sc + xx, 590 * HH, 0} size: {0.5, 0.5};
 			species AQI position: {lx * WW * xx_sc + xx, 590 * HH, 0.01} size: {0.5, 0.5};
 			//			
@@ -128,7 +128,7 @@ experiment exp2 autorun: true {
 			//			
 			//			
 			//			
-//			image ("../includes/bigger_map/hanoi_dark.png") position: {0, 0, -0.0001};
+			image ("../includes/lvl2/hoankiem.png") position: {0, 0, -0.0001};
 			//			species road refresh: false;
 			species building aspect: border refresh: false;
 			species car_random aspect: base;
