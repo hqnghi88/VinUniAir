@@ -289,7 +289,7 @@ species base_vehicle skills: [moving] {
 species vehicle_random parent: base_vehicle {
 	float aqh <- 0.0;
 	bool recompute_path <- false;
-
+	geometry shape<-triangle(100*sizeCoeff);
 	init {
 		road_graph <- road_network;
 		location <- any_location_in(any(road)); //one_of(non_deadend_nodes).location;

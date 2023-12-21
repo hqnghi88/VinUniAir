@@ -78,8 +78,10 @@ experiment expProj autorun: true {
 	parameter "% of Electrical bus" var: n_bus <- 0 min: 0 max: max_bus;
 	output synchronized: true {
 	//		layout #split parameters: false navigator: false editors: false consoles: false toolbars: false tray: false tabs: false controls: true;
-		display "project" background: #black axes: false type: 3d {
-			camera 'default' location: {1533.1738, 1295.5438, 2528.0513} target: {1533.1738, 1295.4997, 0.0};
+		display "project" background: #black axes: false type: 3d 
+		keystone: [{0.0,0.0,0.0},{0.0,1.0,0.0},{1.0,1.0,0.0},{0.9934502617256865,0.021782863139094277,0.0}]
+		{
+//			camera 'default' location: {1533.1738, 1295.5438, 2528.0513} target: {1533.1738, 1295.4997, 0.0};
 			//			image ("../includes/ocplight.png") ;
 			image ("../includes/vindark.png");	
 			species road refresh: false position: {0, 0, 0.05};
@@ -137,7 +139,7 @@ experiment exp2 autorun: false {
 				ask line_graph_aqi {
 					do drawing;
 				}
-
+			
 			}
 
 			//			light #ambient intensity: 256;
@@ -175,7 +177,7 @@ experiment exp2 autorun: false {
 				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
 			}
 
-			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0 color: scale(zone_colors1) smooth: 1;
+			mesh instant_heatmap scale: 4 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
 			//		
 			//
 			//
