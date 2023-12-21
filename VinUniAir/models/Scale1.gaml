@@ -83,7 +83,7 @@ experiment exp2 autorun: true {
 				draw rectangle(40 #px, 160 #px) at: {20 #px, y + 60 #px} wireframe: true color: #white;
 				loop p over: reverse(pollutions.pairs) {
 					draw square(40 #px) at: {20 #px, y} color: rgb(p.key, 1.0);
-					draw p.value at: {60 #px, y} anchor: #left_center color: #white font: text;
+					draw p.value at: {40 #px, y} anchor: #left_center color: #white font: text;
 					y <- y + 40 #px;
 				}
 
@@ -126,11 +126,13 @@ experiment exp2 autorun: true {
 			species car_random aspect: base;
 			species dummy_car aspect: base;
 			species motorbike_random aspect: base;
-			species bus_random {
-				point pos <- compute_position();
-				draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
-				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
-			}
+			species bus_random aspect: base;
+			
+//			species bus_random {
+//				point pos <- compute_position();
+//				draw squircle(50, 6) texture: icon at: pos rotate: 0 depth: 1 * sizeCoeff;
+//				//				draw circle(10) at: pos rotate: heading depth: 1 * sizeCoeff;
+//			}
 
 			mesh instant_heatmap scale: 1 above: 1 triangulation: true transparency: 0.5 color: scale(zone_colors1) smooth: 1;
 			species progress_bar position: {0, 0, 0.0001};

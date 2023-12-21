@@ -82,7 +82,7 @@ experiment expProj autorun: true {
 			camera 'default' location: {1533.1738, 1295.5438, 2528.0513} target: {1533.1738, 1295.4997, 0.0};
 			//			image ("../includes/ocplight.png") ;
 			image ("../includes/vindark.png");	
-			species road refresh: false position: {0, 0, 0.005};
+			species road refresh: false position: {0, 0, 0.05};
 			species building refresh: false;
 			species car_random aspect: base position: {0, 0, 0.05};
 			species dummy_car aspect: base position: {0, 0, 0.05};

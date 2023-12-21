@@ -281,7 +281,7 @@ species base_vehicle skills: [moving] {
 	//				draw circle(10);
 //		point pos <- compute_position(); 
 //				point pos <- compute_position();
-				draw squircle(50 * sizeCoeff, 6 * sizeCoeff)  texture:(is_electrical?icon: icon_fire)   rotate: 0 depth: 0.5 * sizeCoeff;
+				draw squircle(50 * sizeCoeff, 6 * sizeCoeff)  texture:(is_electrical?icon: icon_fire)   rotate: heading depth: 25.5 * sizeCoeff;
 //		draw circle(20* sizeCoeff) color:#blue at: pos rotate: heading depth: 1 * sizeCoeff;
 		//		draw rectangle(1 * sizeCoeff, sizeCoeff) color: color rotate: heading depth: 1 * sizeCoeff border: #black;
 	} }
@@ -404,7 +404,7 @@ species building schedules: [] {
 //	}
 
 	aspect border {
-		draw shape.contour + 10 border: #gray color: #pink;
+		draw shape.contour + 50 border: #gray color: #orange;
 	}
 
 	aspect default {
