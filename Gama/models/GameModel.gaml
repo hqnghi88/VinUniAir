@@ -63,10 +63,7 @@ global {
 					new_weights <- road as_map (each::each.shape.perimeter * (each.drowned ? 3.0 : 1.0));
 					road_network_usable <- as_edge_graph(road where not each.drowned);
 				}
-
-				t <- add_benchmark("recompute_graph", t);
 				do add_water;
-				t <- add_benchmark("add_water", t);
 			} else {
 				stage <- PLAYER_TURN;
 				index_flood <- index_flood + 1;
@@ -85,20 +82,6 @@ global {
 
 		}
 
-	}
-
-	float add_benchmark (string k, float ref_time) {
-		if benchmark_mode {
-			if not (k in benchmark_map.keys) {
-				benchmark_map[k] <- 0.0;
-			}
-
-			benchmark_map[k] <- benchmark_map[k] + gama.machine_time - ref_time;
-			ref_time <- gama.machine_time;
-			return gama.machine_time;
-		}
-
-		return 0.0;
 	}
 
 	float update_score_global (float diff_value) {
@@ -377,7 +360,7 @@ global {
 		float t <- gama.machine_time;
 		update_drowning <- true;
 		bool need_recomputation <- false;
-		matrix matrix_data <- matrix(my_csv_file);
+//		matrix matrix_data <- matrix(my_csv_file);
 		float water_level <- data_map[current_date][0];
 		ask cell {
 			flooding_level <- water_level - altitude;
@@ -396,16 +379,13 @@ global {
 				color <- rgb(val, val, 255);
 			}
 
-		}
-
-		t <- add_benchmark("compute_water_level", t);
+		} 
 		if need_recomputation {
 			do compute_height_propagation;
 		}
 
 		flooded_cells <- cell where (not each.is_river and each.flooding_level > 0);
-		//flooded_cells <- cell where (  each.flooding_level > 0);
-		t <- add_benchmark("compute_height_propagation", t);
+		//flooded_cells <- cell where (  each.flooding_level > 0); 
 	} }
 
 species evacuation_point {
@@ -449,11 +429,7 @@ species road {
 			myself.colorroad <- #red;
 			need_to_recompute_graph <- true;
 			break;
-		}
-
-		ask world {
-			do add_benchmark("Road - check_drowning", t);
-		}
+		} 
 
 	}
 
@@ -492,11 +468,7 @@ species building {
 		my_cells <- cell overlapping self;
 	}
 
-	reflex check_drowning when: not drowned and update_drowning {
-		float t;
-		if benchmark_mode {
-			t <- gama.machine_time;
-		}
+	reflex check_drowning when: not drowned and update_drowning { 
 
 		ask my_cells where (each.flooding_level > 1.0) {
 			myself.drowned <- true;
@@ -504,10 +476,7 @@ species building {
 			score <- world.update_score_global(-5.0);
 			break;
 		}
-
-		ask world {
-			do add_benchmark("Building - check_drowning", t);
-		}
+ 
 
 	}
 
@@ -582,10 +551,7 @@ species people skills: [moving] {
 				target <- nil;
 				do die;
 			} }
-
-		ask world {
-			do add_benchmark("alert_target", t);
-		} }
+ }
 
 	reflex check_drowning {
 		float t;
@@ -598,11 +564,7 @@ species people skills: [moving] {
 			casualties <- casualties + 1;
 			score <- world.update_score_global(float(-10));
 			do die;
-		}
-
-		ask world {
-			do add_benchmark("People - check_drowning", t);
-		}
+		} 
 
 	}
 
