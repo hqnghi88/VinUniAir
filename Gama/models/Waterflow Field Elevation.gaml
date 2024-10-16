@@ -18,12 +18,12 @@ model WaterOnFields
 
 
 global {
-	grid_file dem_file <-  grid_file("../includes/DEM.tif");
+	grid_file dem_file <- file("../includes/DHele.tif");
 	field terrain <- field(dem_file) ;
 	field flow <- field(terrain.columns,terrain.rows);
 	//Shape of the environment using the dem file
 	geometry shape <- envelope(dem_file);
-	bool fill <- false;
+	bool fill <- true;
 
 	//Diffusion rate
 	float diffusion_rate <- 0.8;
@@ -37,9 +37,9 @@ global {
 	map<point, float> h <- points as_map (each::terrain[each]);
 	float input_water;
 	init {
-		geometry river_g <- first( file("../includes/river.shp"));
+		geometry river_g <- first( file("../includes/DH_roads.shp"));
 		float c_h <- shape.height/flow.rows;
-		list<point>  rivers_pt <- points where ((each overlaps river_g) and (terrain[each] < 100.0)) ;
+		list<point>  rivers_pt <- points where ((each overlaps river_g) and (terrain[each] < 10.0)) ;
 		if (fill) {
 			loop pt over: rivers_pt  {
 				flow[pt] <- 1.0;
@@ -106,7 +106,7 @@ experiment hydro type: gui {
 	parameter "Fill the river" var: fill <- true;
 	output {
 		display d type: 3d {
-//			camera 'default' location: {7071.9529,10484.5136,5477.0823} target: {3450.0,3220.0,0.0};
+			camera 'default' location: {7071.9529,10484.5136,5477.0823} target: {3450.0,3220.0,0.0};
 			mesh terrain scale: 10 triangulation: true  color: palette([#burlywood, #saddlebrown, #darkgreen, #green]) refresh: false smooth: true;
 			mesh flow scale: 10 triangulation: true color: palette(reverse(brewer_colors("Blues"))) transparency: 0.5 no_data:0.0 ;
 		}
