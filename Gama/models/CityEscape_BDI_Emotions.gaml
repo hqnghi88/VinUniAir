@@ -9,6 +9,8 @@
 model City_Evacuation
 
 global {
+	string texture <- "../images/building_texture/texture1.jpg";
+	string roof_texture <- "../images/building_texture/roof_top.jpg";	
 	grid_file dem_file <- file("../includes/DHele.tif");
 	field terrain <- field(dem_file);
 	shape_file DH_building0_shape_file <- shape_file("../includes/DH_buildings.shp");
@@ -38,7 +40,7 @@ global {
 		} // from: shapefile_shelters;
 
 		//at the begining of the simulation, we add to the people agent the desire to go to their target.
-		create people number: 200 {
+		create people number: 1200 {
 			location <- any_location_in(one_of(road));
 			do add_desire(at_target);
 
@@ -72,10 +74,10 @@ global {
 }
 
 species building {
-	float dd <- 10.0 + shape.area / 1000 * rnd(3.0);
+	float dd <- 20.0 + shape.area / 1000 * rnd(4.0);
 
 	aspect default {
-		draw shape color: #grey depth: dd;
+		draw shape color: #grey depth: dd ;//texture:[roof_texture,texture];
 	}
 
 }
@@ -156,7 +158,7 @@ species people skills: [moving] control: simple_bdi {
 		if (target = nil) {
 			target <- any_location_in(one_of(road));
 		} else {
-			do goto target: target on: road_network move_weights: current_weights recompute_path: true;
+			do goto target: target on: road_network move_weights: current_weights recompute_path: false;
 			if (target = location) {
 				target <- nil;
 				noTarget <- true;
@@ -174,7 +176,7 @@ species people skills: [moving] control: simple_bdi {
 			target <- (shelter with_min_of (each.location distance_to location)).location;
 			noTarget <- false;
 		} else {
-			do goto target: target on: road_network move_weights: current_weights recompute_path: true;
+			do goto target: target on: road_network move_weights: current_weights recompute_path: false;
 			if (target = location) {
 				do die;
 			}
@@ -263,7 +265,7 @@ species water {
 	}
 
 	aspect default {
-		draw shape depth: dd texture: ("../images/water.gif");
+		draw shape depth: dd texture: ("../images/LWgi-ezgif.com-effects.gif");
 	}
 
 }
